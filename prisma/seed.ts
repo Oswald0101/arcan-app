@@ -56,12 +56,12 @@ async function main() {
 
   // ---- Plans d'abonnement ----
   // Un plan par ligne (billingPeriod séparé)
-  const plans: { planKey: string; title: string; billingPeriod: BillingPeriod; priceAmount: number; description: string; features: string[] }[] = [
-    { planKey: 'free',             title: 'Gratuit',           billingPeriod: 'one_time', priceAmount: 0,    description: 'Pour découvrir',           features: ['Guide basique', '1 Voie', 'Codex simple'] },
-    { planKey: 'premium_monthly',  title: 'Premium Mensuel',   billingPeriod: 'monthly',  priceAmount: 1299, description: 'Accès complet',             features: ['Guide avancé', 'Voies illimitées', 'Export PDF'] },
-    { planKey: 'premium_yearly',   title: 'Premium Annuel',    billingPeriod: 'yearly',   priceAmount: 8999, description: 'Accès complet, -40%',       features: ['Guide avancé', 'Voies illimitées', 'Export PDF'] },
-    { planKey: 'founder_monthly',  title: 'Fondateur Mensuel', billingPeriod: 'monthly',  priceAmount: 2499, description: 'Pour les créateurs',         features: ['Tout Premium', 'Badge Fondateur', 'Analytics'] },
-    { planKey: 'founder_yearly',   title: 'Fondateur Annuel',  billingPeriod: 'yearly',   priceAmount: 17999,description: 'Pour les créateurs, -40%',   features: ['Tout Premium', 'Badge Fondateur', 'Analytics'] },
+  const plans = [
+    { planKey: 'free',             title: 'Gratuit',           billingPeriod: 'one_time' as BillingPeriod, priceAmount: 0,    description: 'Pour découvrir',           features: ['Guide basique', '1 Voie', 'Codex simple'] },
+    { planKey: 'premium_monthly',  title: 'Premium Mensuel',   billingPeriod: 'monthly'  as BillingPeriod, priceAmount: 1299, description: 'Accès complet',             features: ['Guide avancé', 'Voies illimitées', 'Export PDF'] },
+    { planKey: 'premium_yearly',   title: 'Premium Annuel',    billingPeriod: 'yearly'   as BillingPeriod, priceAmount: 8999, description: 'Accès complet, -40%',       features: ['Guide avancé', 'Voies illimitées', 'Export PDF'] },
+    { planKey: 'founder_monthly',  title: 'Fondateur Mensuel', billingPeriod: 'monthly'  as BillingPeriod, priceAmount: 2499, description: 'Pour les créateurs',         features: ['Tout Premium', 'Badge Fondateur', 'Analytics'] },
+    { planKey: 'founder_yearly',   title: 'Fondateur Annuel',  billingPeriod: 'yearly'   as BillingPeriod, priceAmount: 17999,description: 'Pour les créateurs, -40%',   features: ['Tout Premium', 'Badge Fondateur', 'Analytics'] },
   ]
 
   for (const plan of plans) {
