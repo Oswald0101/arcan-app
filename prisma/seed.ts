@@ -67,8 +67,8 @@ async function main() {
   for (const plan of plans) {
     await prisma.subscriptionPlan.upsert({
       where: { planKey: plan.planKey },
-      create: { ...plan, features: JSON.parse(plan.features) },
-      update: { title: plan.title, priceAmount: plan.priceAmount },
+      create: { ...plan, billingPeriod: plan.billingPeriod as any, features: JSON.parse(plan.features) },
+      update: { title: plan.title, priceAmount: plan.priceAmount, billingPeriod: plan.billingPeriod as any },
     })
   }
   console.log('✓ SubscriptionPlan')
