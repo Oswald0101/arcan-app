@@ -26,7 +26,7 @@ export function InviteWidget({ stats, existingCodes }: InviteWidgetProps) {
     startTransition(async () => {
       const result = await generateInviteAction()
       if (result.success && result.data) setNewCode(result.data)
-      else setError(result.error)
+      else setError((result as any).error ?? 'Erreur inconnue')
     })
   }
 
