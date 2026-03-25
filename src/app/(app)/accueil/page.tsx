@@ -23,7 +23,7 @@ export default async function AccueilPage() {
     todayPractices, streakDays,
   } = data
 
-  const lang = (profile?.language ?? 'fr') as Lang
+  const lang: Lang = 'fr'
   const memberName = profile?.displayName || profile?.username || 'Explorateur'
   const xpCurrent = profile?.currentXp ?? 0
   const xpRequired = memberProgress?.currentLevel?.requiredXp ?? 1000
