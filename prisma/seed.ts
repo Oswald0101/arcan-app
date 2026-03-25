@@ -1,6 +1,6 @@
 // prisma/seed.ts — Seed minimal aligné sur schema.prisma réel
 
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, BillingPeriod } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
@@ -56,19 +56,19 @@ async function main() {
 
   // ---- Plans d'abonnement ----
   // Un plan par ligne (billingPeriod séparé)
-  const plans = [
-    { planKey: 'free',             title: 'Gratuit',           billingPeriod: 'one_time', priceAmount: 0,    description: 'Pour découvrir', features: JSON.stringify(['Guide basique', '1 Voie', 'Codex simple']) },
-    { planKey: 'premium_monthly',  title: 'Premium Mensuel',   billingPeriod: 'monthly',  priceAmount: 1299, description: 'Accès complet',   features: JSON.stringify(['Guide avancé', 'Voies illimitées', 'Export PDF']) },
-    { planKey: 'premium_yearly',   title: 'Premium Annuel',    billingPeriod: 'yearly',   priceAmount: 8999, description: 'Accès complet, -40%', features: JSON.stringify(['Guide avancé', 'Voies illimitées', 'Export PDF']) },
-    { planKey: 'founder_monthly',  title: 'Fondateur Mensuel', billingPeriod: 'monthly',  priceAmount: 2499, description: 'Pour les créateurs', features: JSON.stringify(['Tout Premium', 'Badge Fondateur', 'Analytics']) },
-    { planKey: 'founder_yearly',   title: 'Fondateur Annuel',  billingPeriod: 'yearly',   priceAmount: 17999,description: 'Pour les créateurs, -40%', features: JSON.stringify(['Tout Premium', 'Badge Fondateur', 'Analytics']) },
+  const plans: { planKey: string; title: string; billingPeriod: BillingPeriod; priceAmount: number; description: string; features: string[] }[] = [
+    { planKey: 'free',             title: 'Gratuit',           billingPeriod: 'one_time', priceAmount: 0,    description: 'Pour découvrir',           features: ['Guide basique', '1 Voie', 'Codex simple'] },
+    { planKey: 'premium_monthly',  title: 'Premium Mensuel',   billingPeriod: 'monthly',  priceAmount: 1299, description: 'Accès complet',             features: ['Guide avancé', 'Voies illimitées', 'Export PDF'] },
+    { planKey: 'premium_yearly',   title: 'Premium Annuel',    billingPeriod: 'yearly',   priceAmount: 8999, description: 'Accès complet, -40%',       features: ['Guide avancé', 'Voies illimitées', 'Export PDF'] },
+    { planKey: 'founder_monthly',  title: 'Fondateur Mensuel', billingPeriod: 'monthly',  priceAmount: 2499, description: 'Pour les créateurs',         features: ['Tout Premium', 'Badge Fondateur', 'Analytics'] },
+    { planKey: 'founder_yearly',   title: 'Fondateur Annuel',  billingPeriod: 'yearly',   priceAmount: 17999,description: 'Pour les créateurs, -40%',   features: ['Tout Premium', 'Badge Fondateur', 'Analytics'] },
   ]
 
   for (const plan of plans) {
     await prisma.subscriptionPlan.upsert({
       where: { planKey: plan.planKey },
-      create: { ...plan, billingPeriod: plan.billingPeriod as any, features: JSON.parse(plan.features) },
-      update: { title: plan.title, priceAmount: plan.priceAmount, billingPeriod: plan.billingPeriod as any },
+      create: { planKey: plan.planKey, title: plan.title, billingPeriod: plan.billingPeriod, priceAmount: plan.priceAmount, description: plan.description, features: plan.features },
+      update: { title: plan.title, priceAmount: plan.priceAmount, billingPeriod: plan.billingPeriod },
     })
   }
   console.log('✓ SubscriptionPlan')
