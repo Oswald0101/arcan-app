@@ -1,0 +1,1575 @@
+// ============================================================
+// VOIE APP — Prisma Schema
+// Database: PostgreSQL (Supabase)
+// Generator: prisma-client-js
+// ============================================================
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  directUrl  = env("DIRECT_URL")
+  extensions = [uuidOssp(map: "uuid-ossp"), pgcrypto]
+}
+
+// ============================================================
+// ENUMS
+// ============================================================
+
+enum UserRole {
+  member
+  founder
+  moderator
+  admin
+  super_admin
+
+  @@map("user_role")
+}
+
+enum AccountStatus {
+  pending
+  active
+  suspended
+  banned
+  deleted
+
+  @@map("account_status")
+}
+
+enum VerificationBadge {
+  none
+  verified
+  founder_verified
+
+  @@map("verification_badge")
+}
+
+enum LanguageCode {
+  fr
+  en
+  es
+  pt
+
+  @@map("language_code")
+}
+
+enum ThemeMode {
+  dark
+  light
+  system
+
+  @@map("theme_mode")
+}
+
+enum NotificationLevel {
+  all
+  important
+  minimal
+  none
+
+  @@map("notification_level")
+}
+
+enum GuideAddressMode {
+  tutoiement
+  vouvoiement
+
+  @@map("guide_address_mode")
+}
+
+enum OnboardingStatus {
+  started
+  in_progress
+  completed
+  abandoned
+
+  @@map("onboarding_status")
+}
+
+enum QuestionType {
+  free_text
+  single_choice
+  multi_choice
+  scale
+
+  @@map("question_type")
+}
+
+enum PathCanonicalType {
+  voie
+  religion
+  mouvement
+  philosophie
+  ordre
+  tradition
+  courant
+  ecole
+  cercle_type
+  temple
+  doctrine
+  culte
+  autre
+
+  @@map("path_canonical_type")
+}
+
+enum GuideCanonicalType {
+  guide
+  dieu
+  presence
+  source
+  gardien
+  maitre
+  oracle
+  voix
+  force
+  flamme
+  conscience
+  esprit
+  principe
+  autre
+
+  @@map("guide_canonical_type")
+}
+
+enum PathVisibility {
+  public
+  unlisted
+  private
+
+  @@map("path_visibility")
+}
+
+enum AdmissionMode {
+  open
+  on_request
+  invite_only
+
+  @@map("admission_mode")
+}
+
+enum PathStatus {
+  active
+  archived
+  suspended
+
+  @@map("path_status")
+}
+
+enum GuideTone {
+  direct
+  doux
+  philosophique
+  stoique
+  mystique
+  socratique
+  solennel
+  fraternel
+  sobre
+  inspirant
+
+  @@map("guide_tone")
+}
+
+enum MembershipRole {
+  member
+  elder
+  moderator
+  founder
+
+  @@map("membership_role")
+}
+
+enum MembershipStatus {
+  pending
+  active
+  suspended
+  left
+  banned
+
+  @@map("membership_status")
+}
+
+enum Difficulty {
+  easy
+  medium
+  hard
+
+  @@map("difficulty")
+}
+
+enum PracticeFrequency {
+  daily
+  weekly
+  monthly
+  custom
+
+  @@map("practice_frequency")
+}
+
+enum LogStatus {
+  in_progress
+  completed
+  failed
+  skipped
+
+  @@map("log_status")
+}
+
+enum SenderType {
+  member
+  guide
+  system
+
+  @@map("sender_type")
+}
+
+enum ConversationStatus {
+  active
+  archived
+
+  @@map("conversation_status")
+}
+
+enum MemoryType {
+  commitment
+  struggle
+  progress
+  preference
+  context
+  keyword
+  warning
+
+  @@map("memory_type")
+}
+
+enum CodexType {
+  personal
+  path
+  guide
+
+  @@map("codex_type")
+}
+
+enum CodexStatus {
+  draft
+  published
+  archived
+
+  @@map("codex_status")
+}
+
+enum CodexOrderType {
+  pdf_export
+  premium_edition
+  print
+
+  @@map("codex_order_type")
+}
+
+enum CodexOrderStatus {
+  pending
+  processing
+  completed
+  failed
+  refunded
+
+  @@map("codex_order_status")
+}
+
+enum ContactStatus {
+  pending
+  accepted
+  rejected
+  blocked
+
+  @@map("contact_status")
+}
+
+enum FollowTargetType {
+  user
+  path
+
+  @@map("follow_target_type")
+}
+
+enum InviteStatus {
+  pending
+  accepted
+  expired
+  cancelled
+
+  @@map("invite_status")
+}
+
+enum InviteType {
+  app
+  path
+
+  @@map("invite_type")
+}
+
+enum NotificationType {
+  guide_message
+  daily_practice
+  challenge_reminder
+  contact_request
+  new_message
+  rank_up
+  level_up
+  badge_earned
+  invite_accepted
+  system
+
+  @@map("notification_type")
+}
+
+enum BillingPeriod {
+  monthly
+  yearly
+  lifetime
+  one_time
+
+  @@map("billing_period")
+}
+
+enum SubscriptionStatus {
+  trialing
+  active
+  past_due
+  canceled
+  expired
+
+  @@map("subscription_status")
+}
+
+enum ProductType {
+  avatar_pack
+  guide_skin
+  theme
+  practice_pack
+  challenge_pack
+  codex_export
+  codex_premium_edition
+  subscription_upgrade
+
+  @@map("product_type")
+}
+
+enum PurchaseStatus {
+  pending
+  completed
+  refunded
+  failed
+
+  @@map("purchase_status")
+}
+
+enum EntitlementSource {
+  subscription
+  purchase
+  referral
+  admin_grant
+
+  @@map("entitlement_source")
+}
+
+enum ReportTargetType {
+  user
+  path
+  guide_message
+  direct_message
+  codex
+
+  @@map("report_target_type")
+}
+
+enum ReportStatus {
+  pending
+  under_review
+  resolved_no_action
+  resolved_action_taken
+  dismissed
+
+  @@map("report_status")
+}
+
+enum ModerationActionType {
+  warning
+  content_removed
+  suspend
+  ban
+  path_suspended
+  path_deleted
+
+  @@map("moderation_action_type")
+}
+
+enum VerificationRequestType {
+  standard
+  founder
+
+  @@map("verification_request_type")
+}
+
+enum VerificationRequestStatus {
+  pending
+  approved
+  rejected
+  more_info_needed
+
+  @@map("verification_request_status")
+}
+
+// ============================================================
+// BLOC A — Comptes et identité
+// ============================================================
+
+// Note : auth.users est géré par Supabase — on le référence via @db.Uuid
+// Prisma ne modélise pas auth.users directement
+
+model User {
+  id            String        @id @db.Uuid
+  role          UserRole      @default(member)
+  accountStatus AccountStatus @default(pending) @map("account_status")
+  createdAt     DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime      @updatedAt @map("updated_at") @db.Timestamptz
+  lastLoginAt   DateTime?     @map("last_login_at") @db.Timestamptz
+  deletedAt     DateTime?     @map("deleted_at") @db.Timestamptz
+
+  // Relations
+  profile                 Profile?
+  codexVersionsCreated CodexVersion[]
+  preferences             UserPreference?
+  legalConsents           LegalConsent[]
+  onboardingSessions      OnboardingSession[]
+  onboardingAnswers       OnboardingAnswer[]
+  sensitivityProfile      UserSensitivityProfile?
+  foundedPaths            Path[]                   @relation("PathFounder")
+  guides                  Guide[]                  @relation("GuideOwner")
+  memberProgress          UserMemberProgress?
+  pathProgresses          UserPathProgress[]
+  practiceLogs            UserPracticeLog[]
+  practiceValidations     PracticeValidation[]
+  challengeLogs           UserChallengeLog[]
+  userBadges              UserBadge[]
+  guideConversations      GuideConversation[]
+  guideMemoryItems        GuideMemoryItem[]
+  codexes                 Codex[]                  @relation("CodexOwner")
+  manifestos              Manifesto[]              @relation("ManifestoOwner")
+  principles              Principle[]              @relation("PrincipleOwner")
+  codexOrders             CodexOrder[]
+  sentContactRequests     ContactRequest[]         @relation("ContactSender")
+  receivedContactRequests ContactRequest[]         @relation("ContactReceiver")
+  contactsAsOne           Contact[]                @relation("ContactUserOne")
+  contactsAsTwo           Contact[]                @relation("ContactUserTwo")
+  conversationsAsOne      DirectConversation[]     @relation("DirectConvUserOne")
+  conversationsAsTwo      DirectConversation[]     @relation("DirectConvUserTwo")
+  directMessagesSent      DirectMessage[]
+  follows                 Follow[]
+  invitesSent             Invite[]                 @relation("InviteInviter")
+  inviteAccepted          Invite?                  @relation("InviteAccepted")
+  referralRewardsGiven    ReferralReward[]         @relation("ReferralInviter")
+  referralRewardsReceived ReferralReward[]         @relation("ReferralInvitee")
+  notifications           Notification[]
+  subscriptions           UserSubscription[]
+  purchases               Purchase[]
+  entitlements            UserEntitlement[]
+  reports                 Report[]                 @relation("ReportReporter")
+  blocksGiven             Block[]                  @relation("BlockBlocker")
+  blocksReceived          Block[]                  @relation("BlockBlocked")
+  verificationRequests    VerificationRequest[]    @relation("VerificationUser")
+  ageConsent              AgeConsent?
+  adminRoles              UserAdminRole[]          @relation("AdminRoleUser")
+  adminNotes              AdminNote[]              @relation("AdminNoteAuthor")
+  auditLogs               AuditLog[]               @relation("AuditActor")
+  analyticsEvents         AnalyticsEvent[]
+  // Relations admin (reviewer, approver...)
+  memberships             CircleMembership[]
+  invitedMemberships      CircleMembership[]       @relation("MembershipInviter")
+  approvedMemberships     CircleMembership[]       @relation("MembershipApprover")
+  pathVersionsCreated     PathVersion[]
+  assignedReports         Report[]                 @relation("ReportAssigned")
+  moderationActions       ModerationAction[]       @relation("ModerationModerator")
+  verificationReviews     VerificationRequest[]    @relation("VerificationReviewer")
+  adminRolesGranted       UserAdminRole[]          @relation("AdminRoleGranter")
+  foundedCircles          Circle[]                 @relation("CircleFounder")
+
+  @@map("users")
+}
+
+model Profile {
+  id                   String            @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId               String            @unique @map("user_id") @db.Uuid
+  username             String            @unique
+  displayName          String?           @map("display_name")
+  bio                  String?
+  avatarType           String            @default("preset") @map("avatar_type")
+  avatarUrl            String?           @map("avatar_url")
+  country              String?
+  city                 String?
+  language             LanguageCode      @default(fr)
+  timezone             String            @default("UTC")
+  isPublic             Boolean           @default(true) @map("is_public")
+  showLocation         Boolean           @default(false) @map("show_location")
+  showPath             Boolean           @default(true) @map("show_path")
+  showGuide            Boolean           @default(false) @map("show_guide")
+  showLevel            Boolean           @default(true) @map("show_level")
+  verificationStatus   VerificationBadge @default(none) @map("verification_status")
+  onboardingCompleted  Boolean           @default(false) @map("onboarding_completed")
+  onboardingCompletedAt DateTime?        @map("onboarding_completed_at") @db.Timestamptz
+  currentLevel         Int               @default(1) @map("current_level")
+  currentXp            Int               @default(0) @map("current_xp")
+  createdAt            DateTime          @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt            DateTime          @updatedAt @map("updated_at") @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("profiles")
+}
+
+model UserPreference {
+  id                String            @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId            String            @unique @map("user_id") @db.Uuid
+  language          LanguageCode      @default(fr)
+  themeMode         ThemeMode         @default(dark) @map("theme_mode")
+  soundEnabled      Boolean           @default(true) @map("sound_enabled")
+  hapticsEnabled    Boolean           @default(true) @map("haptics_enabled")
+  notificationLevel NotificationLevel @default(important) @map("notification_level")
+  guideAddressMode  GuideAddressMode  @default(tutoiement) @map("guide_address_mode")
+  extraPrefs        Json              @default("{}") @map("extra_prefs")
+  createdAt         DateTime          @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt         DateTime          @updatedAt @map("updated_at") @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_preferences")
+}
+
+model LegalConsent {
+  id             String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId         String   @map("user_id") @db.Uuid
+  consentType    String   @map("consent_type")
+  consentVersion String   @map("consent_version")
+  accepted       Boolean  @default(true)
+  acceptedAt     DateTime @default(now()) @map("accepted_at") @db.Timestamptz
+  ipHash         String?  @map("ip_hash")
+  userAgentHash  String?  @map("user_agent_hash")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("legal_consents")
+}
+
+// ============================================================
+// BLOC B — Onboarding
+// ============================================================
+
+model OnboardingSession {
+  id                      String           @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId                  String           @map("user_id") @db.Uuid
+  status                  OnboardingStatus @default(started)
+  currentBloc             Int              @default(1) @map("current_bloc")
+  version                 String           @default("1.0")
+  startedAt               DateTime         @default(now()) @map("started_at") @db.Timestamptz
+  completedAt             DateTime?        @map("completed_at") @db.Timestamptz
+  generatedProfileSnapshot Json?           @map("generated_profile_snapshot")
+
+  user    User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  answers OnboardingAnswer[]
+  sensitivityProfile UserSensitivityProfile?
+
+  @@map("onboarding_sessions")
+}
+
+model OnboardingAnswer {
+  id            String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  sessionId     String       @map("session_id") @db.Uuid
+  userId        String       @map("user_id") @db.Uuid
+  blocNumber    Int          @map("bloc_number")
+  questionKey   String       @map("question_key")
+  questionType  QuestionType @map("question_type")
+  answerText    String?      @map("answer_text")
+  answerChoice  String?      @map("answer_choice")
+  answerChoices String[]     @map("answer_choices")
+  answerScale   Int?         @map("answer_scale")
+  createdAt     DateTime     @default(now()) @map("created_at") @db.Timestamptz
+
+  session OnboardingSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  user    User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([sessionId, questionKey])
+  @@map("onboarding_answers")
+}
+
+model UserSensitivityProfile {
+  id                    String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId                String   @unique @db.Uuid
+  sessionId             String?  @unique @map("session_id") @db.Uuid
+  needForStructure      Decimal? @map("need_for_structure") @db.Decimal(3, 2)
+  needForMeaning        Decimal? @map("need_for_meaning") @db.Decimal(3, 2)
+  spiritualAffinity     Decimal? @map("spiritual_affinity") @db.Decimal(3, 2)
+  symbolicAffinity      Decimal? @map("symbolic_affinity") @db.Decimal(3, 2)
+  rationalAffinity      Decimal? @map("rational_affinity") @db.Decimal(3, 2)
+  communityDesire       Decimal? @map("community_desire") @db.Decimal(3, 2)
+  confrontationPref     Decimal? @map("confrontation_preference") @db.Decimal(3, 2)
+  softnessPref          Decimal? @map("softness_preference") @db.Decimal(3, 2)
+  commitmentLevel       Decimal? @map("commitment_level") @db.Decimal(3, 2)
+  emotionalStability    Decimal? @map("emotional_stability") @db.Decimal(3, 2)
+  creationDesire        Decimal? @map("creation_desire") @db.Decimal(3, 2)
+  generatedSummary      String?  @map("generated_summary")
+  extractedKeywords     String[] @map("extracted_keywords")
+  symbolicAffinities    String[] @map("symbolic_affinities")
+  createdAt             DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt             DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  user    User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  session OnboardingSession? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+
+  @@map("user_sensitivity_profiles")
+}
+
+// ============================================================
+// BLOC C — Voies, guides, cercles
+// ============================================================
+
+model Path {
+  id               String            @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  founderUserId    String            @map("founder_user_id") @db.Uuid
+  canonicalType    PathCanonicalType @default(voie) @map("canonical_type")
+  customTypeLabel  String?           @map("custom_type_label")
+  name             String
+  slug             String            @unique
+  shortDescription String            @map("short_description")
+  longDescription  String?           @map("long_description")
+  language         LanguageCode      @default(fr)
+  status           PathStatus        @default(active)
+  visibility       PathVisibility    @default(public)
+  admissionMode    AdmissionMode     @default(open) @map("admission_mode")
+  primaryTheme     String?           @map("primary_theme")
+  symbolicStyle    String?           @map("symbolic_style")
+  memberCount      Int               @default(0) @map("member_count")
+  currentVersion   Int               @default(1) @map("current_version")
+  createdAt        DateTime          @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt        DateTime          @updatedAt @map("updated_at") @db.Timestamptz
+
+  founder       User           @relation("PathFounder", fields: [founderUserId], references: [id], onDelete: Restrict)
+  versions      PathVersion[]
+  circle        Circle?
+  ranks         PathRank[]
+  practices     Practice[]
+  challenges    Challenge[]
+  manifestos    Manifesto[]    @relation("ManifestoPath")
+  principles    Principle[]    @relation("PrinciplePath")
+  guides        Guide[]
+  codexes       Codex[]        @relation("CodexPath")
+  pathProgresses UserPathProgress[]
+  invites       Invite[]
+
+  @@index([visibility])
+  @@index([founderUserId])
+  @@index([status])
+  @@map("paths")
+}
+
+model PathVersion {
+  id              String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  pathId          String   @map("path_id") @db.Uuid
+  versionNumber   Int      @map("version_number")
+  manifestoText   String?  @map("manifesto_text")
+  principles      String[]
+  practices       String[]
+  evolutionNotes  String?  @map("evolution_notes")
+  createdByUserId String   @map("created_by_user_id") @db.Uuid
+  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  path      Path @relation(fields: [pathId], references: [id], onDelete: Cascade)
+  createdBy User @relation(fields: [createdByUserId], references: [id], onDelete: Restrict)
+
+  @@unique([pathId, versionNumber])
+  @@map("path_versions")
+}
+
+model Guide {
+  id               String             @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  ownerUserId      String             @map("owner_user_id") @db.Uuid
+  pathId           String?            @map("path_id") @db.Uuid
+  canonicalType    GuideCanonicalType @default(guide) @map("canonical_type")
+  customTypeLabel  String?            @map("custom_type_label")
+  name             String
+  memberName       String?            @map("member_name")
+  tone             GuideTone          @default(direct)
+  addressMode      GuideAddressMode   @default(tutoiement) @map("address_mode")
+  firmnessLevel    Int                @default(3) @map("firmness_level")
+  warmthLevel      Int                @default(3) @map("warmth_level")
+  symbolicIdentity String?            @map("symbolic_identity")
+  avatarAssetUrl   String?            @map("avatar_asset_url")
+  personalityPrompt String            @map("personality_prompt")
+  memorySummary    String?            @map("memory_summary")
+  currentVersion   Int                @default(1) @map("current_version")
+  createdAt        DateTime           @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt        DateTime           @updatedAt @map("updated_at") @db.Timestamptz
+
+  owner         User               @relation("GuideOwner", fields: [ownerUserId], references: [id], onDelete: Cascade)
+  path          Path?              @relation(fields: [pathId], references: [id], onDelete: SetNull)
+  versions      GuideVersion[]
+  conversations GuideConversation[]
+  memoryItems   GuideMemoryItem[]
+  codexes       Codex[]            @relation("CodexGuide")
+
+  @@map("guides")
+}
+
+model GuideVersion {
+  id               String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  guideId          String    @map("guide_id") @db.Uuid
+  versionNumber    Int       @map("version_number")
+  tone             GuideTone
+  firmnessLevel    Int       @map("firmness_level")
+  warmthLevel      Int       @map("warmth_level")
+  personalityPrompt String   @map("personality_prompt")
+  changeSummary    String?   @map("change_summary")
+  createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  guide Guide @relation(fields: [guideId], references: [id], onDelete: Cascade)
+
+  @@unique([guideId, versionNumber])
+  @@map("guide_versions")
+}
+
+model Circle {
+  id            String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  pathId        String   @unique @map("path_id") @db.Uuid
+  founderUserId String   @map("founder_user_id") @db.Uuid
+  name          String?
+  description   String?
+  memberCount   Int      @default(0) @map("member_count")
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  path        Path               @relation(fields: [pathId], references: [id], onDelete: Cascade)
+  founder     User               @relation("CircleFounder", fields: [founderUserId], references: [id], onDelete: Restrict)
+  memberships CircleMembership[]
+
+  @@map("circles")
+}
+
+model CircleMembership {
+  id               String           @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  circleId         String           @map("circle_id") @db.Uuid
+  userId           String           @map("user_id") @db.Uuid
+  role             MembershipRole   @default(member)
+  status           MembershipStatus @default(active)
+  joinedAt         DateTime         @default(now()) @map("joined_at") @db.Timestamptz
+  invitedByUserId  String?          @map("invited_by_user_id") @db.Uuid
+  approvedByUserId String?          @map("approved_by_user_id") @db.Uuid
+
+  circle      Circle @relation(fields: [circleId], references: [id], onDelete: Cascade)
+  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  invitedBy   User?  @relation("MembershipInviter", fields: [invitedByUserId], references: [id], onDelete: SetNull)
+  approvedBy  User?  @relation("MembershipApprover", fields: [approvedByUserId], references: [id], onDelete: SetNull)
+
+  @@unique([circleId, userId])
+  @@index([circleId, status])
+  @@index([userId, status])
+  @@map("circle_memberships")
+}
+
+// ============================================================
+// BLOC D — Progression
+// ============================================================
+
+model MemberLevel {
+  id           String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  levelNumber  Int      @unique @map("level_number")
+  title        String
+  requiredXp   Int      @map("required_xp")
+  badgeUrl     String?  @map("badge_url")
+  perks        Json     @default("[]")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  usersAtLevel UserMemberProgress[]
+
+  @@map("member_levels")
+}
+
+model UserMemberProgress {
+  id                       String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId                   String    @unique @map("user_id") @db.Uuid
+  currentLevelId           String?   @map("current_level_id") @db.Uuid
+  currentXp                Int       @default(0) @map("current_xp")
+  streakDays               Int       @default(0) @map("streak_days")
+  longestStreak            Int       @default(0) @map("longest_streak")
+  totalPracticesCompleted  Int       @default(0) @map("total_practices_completed")
+  totalChallengesCompleted Int       @default(0) @map("total_challenges_completed")
+  totalDaysActive          Int       @default(0) @map("total_days_active")
+  lastActivityAt           DateTime? @map("last_activity_at") @db.Timestamptz
+  updatedAt                DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  currentLevel MemberLevel? @relation(fields: [currentLevelId], references: [id], onDelete: SetNull)
+
+  @@map("user_member_progress")
+}
+
+model PathRank {
+  id                 String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  pathId             String   @map("path_id") @db.Uuid
+  rankOrder          Int      @map("rank_order")
+  title              String
+  description        String?
+  requiredXp         Int      @default(0) @map("required_xp")
+  requiredConditions Json     @default("{}") @map("required_conditions")
+  badgeUrl           String?  @map("badge_url")
+  createdAt          DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  path            Path                 @relation(fields: [pathId], references: [id], onDelete: Cascade)
+  usersAtRank     UserPathProgress[]
+
+  @@unique([pathId, rankOrder])
+  @@map("path_ranks")
+}
+
+model UserPathProgress {
+  id                   String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId               String    @map("user_id") @db.Uuid
+  pathId               String    @map("path_id") @db.Uuid
+  currentRankId        String?   @map("current_rank_id") @db.Uuid
+  rankXp               Int       @default(0) @map("rank_xp")
+  practicesCompleted   Int       @default(0) @map("practices_completed")
+  challengesCompleted  Int       @default(0) @map("challenges_completed")
+  consistencyScore     Decimal   @default(0) @map("consistency_score") @db.Decimal(4, 2)
+  joinedAt             DateTime  @default(now()) @map("joined_at") @db.Timestamptz
+  lastProgressAt       DateTime? @map("last_progress_at") @db.Timestamptz
+  updatedAt            DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  path        Path      @relation(fields: [pathId], references: [id], onDelete: Cascade)
+  currentRank PathRank? @relation(fields: [currentRankId], references: [id], onDelete: SetNull)
+
+  @@unique([userId, pathId])
+  @@map("user_path_progress")
+}
+
+model Practice {
+  id                 String            @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  pathId             String?           @map("path_id") @db.Uuid
+  title              String
+  description        String
+  frequency          PracticeFrequency @default(daily)
+  xpReward           Int               @default(5) @map("xp_reward")
+  isActive           Boolean           @default(true) @map("is_active")
+  // Type de validation : simple | corporelle | journal | lecture | meditation | epreuve
+  validationType     String            @default("simple") @map("validation_type")
+  // Durée minimale en secondes (0 = pas de timer)
+  minDurationSeconds Int               @default(0) @map("min_duration_seconds")
+  createdAt          DateTime          @default(now()) @map("created_at") @db.Timestamptz
+
+  path        Path?               @relation(fields: [pathId], references: [id], onDelete: Cascade)
+  logs        UserPracticeLog[]
+  validations PracticeValidation[]
+
+  @@map("practices")
+}
+
+// Trace de chaque validation de pratique — source de vérité anti-triche
+model PracticeValidation {
+  id             String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId         String   @map("user_id") @db.Uuid
+  practiceId     String   @map("practice_id") @db.Uuid
+  elapsedSeconds Int      @map("elapsed_seconds")
+  responseText   String?  @map("response_text")
+  score          Decimal  @map("score") @db.Decimal(4, 3)
+  xpAwarded      Int      @map("xp_awarded")
+  // Flags anti-triche : too_fast | no_text | low_quality_text | repeated_response | daily_cap_reached
+  flags          String[]
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  practice Practice @relation(fields: [practiceId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@map("practice_validations")
+}
+
+// ============================================================
+// CERVEAU MÈRE — Base de connaissances du Guide
+// ============================================================
+
+// Entrée de connaissance injectée dans le prompt système du guide
+// scope = "global" (universel) | "voie:{pathId}" (spécifique à une Voie)
+// targetSensitivity = dimension de sensibilité favorisée (boost au retrieval)
+model KnowledgeEntry {
+  id                String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  scope             String   @default("global")
+  category          String   // "pratique" | "philosophie" | "psychologie" | "tradition" | "concept"
+  content           String   @db.Text
+  weight            Decimal  @default(1.0) @map("weight") @db.Decimal(4, 2)
+  tags              String[]
+  targetSensitivity String?  @map("target_sensitivity")
+  source            String   @default("admin")
+  isActive          Boolean  @default(true) @map("is_active")
+  createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt         DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([scope, isActive])
+  @@map("knowledge_entries")
+}
+
+model Challenge {
+  id           String     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  pathId       String?    @map("path_id") @db.Uuid
+  title        String
+  description  String
+  difficulty   Difficulty @default(medium)
+  durationDays Int?       @map("duration_days")
+  xpReward     Int        @default(10) @map("xp_reward")
+  isActive     Boolean    @default(true) @map("is_active")
+  createdAt    DateTime   @default(now()) @map("created_at") @db.Timestamptz
+
+  path Path?              @relation(fields: [pathId], references: [id], onDelete: Cascade)
+  logs UserChallengeLog[]
+
+  @@map("challenges")
+}
+
+model UserPracticeLog {
+  id          String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId      String    @map("user_id") @db.Uuid
+  practiceId  String    @map("practice_id") @db.Uuid
+  status      LogStatus @default(completed)
+  note        String?
+  xpEarned    Int       @default(0) @map("xp_earned")
+  loggedAt    DateTime  @default(now()) @map("logged_at") @db.Timestamptz
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  practice Practice @relation(fields: [practiceId], references: [id], onDelete: Cascade)
+
+  @@index([userId, loggedAt(sort: Desc)])
+  @@map("user_practice_logs")
+}
+
+model UserChallengeLog {
+  id           String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId       String    @map("user_id") @db.Uuid
+  challengeId  String    @map("challenge_id") @db.Uuid
+  status       LogStatus @default(in_progress)
+  startedAt    DateTime  @default(now()) @map("started_at") @db.Timestamptz
+  completedAt  DateTime? @map("completed_at") @db.Timestamptz
+  note         String?
+  xpEarned     Int       @default(0) @map("xp_earned")
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  challenge Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+  @@map("user_challenge_logs")
+}
+
+model Badge {
+  id           String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  key          String   @unique
+  title        String
+  description  String?
+  imageUrl     String?  @map("image_url")
+  triggerType  String   @map("trigger_type")
+  triggerValue Int?     @map("trigger_value")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  userBadges UserBadge[]
+
+  @@map("badges")
+}
+
+model UserBadge {
+  id       String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId   String   @map("user_id") @db.Uuid
+  badgeId  String   @map("badge_id") @db.Uuid
+  earnedAt DateTime @default(now()) @map("earned_at") @db.Timestamptz
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badge Badge @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, badgeId])
+  @@map("user_badges")
+}
+
+// ============================================================
+// BLOC E — Conversations et mémoire
+// ============================================================
+
+model GuideConversation {
+  id        String             @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId    String             @map("user_id") @db.Uuid
+  guideId   String             @map("guide_id") @db.Uuid
+  title     String?
+  status    ConversationStatus @default(active)
+  createdAt DateTime           @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime           @updatedAt @map("updated_at") @db.Timestamptz
+
+  user     User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  guide    Guide          @relation(fields: [guideId], references: [id], onDelete: Cascade)
+  messages GuideMessage[]
+
+  @@index([userId, status])
+  @@map("guide_conversations")
+}
+
+model GuideMessage {
+  id              String     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  conversationId  String     @map("conversation_id") @db.Uuid
+  senderType      SenderType @map("sender_type")
+  content         String
+  inputTokens     Int?       @map("input_tokens")
+  outputTokens    Int?       @map("output_tokens")
+  modelUsed       String?    @map("model_used")
+  metadata        Json       @default("{}")
+  createdAt       DateTime   @default(now()) @map("created_at") @db.Timestamptz
+
+  conversation GuideConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  memoryItems  GuideMemoryItem[]
+
+  @@index([conversationId, createdAt(sort: Asc)])
+  @@map("guide_messages")
+}
+
+model GuideMemoryItem {
+  id              String     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId          String     @map("user_id") @db.Uuid
+  guideId         String     @map("guide_id") @db.Uuid
+  memoryType      MemoryType @map("memory_type")
+  memoryKey       String     @map("memory_key")
+  memoryValue     String     @map("memory_value")
+  importanceScore Decimal    @default(0.5) @map("importance_score") @db.Decimal(3, 2)
+  sourceMessageId String?    @map("source_message_id") @db.Uuid
+  isActive        Boolean    @default(true) @map("is_active")
+  createdAt       DateTime   @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt       DateTime   @updatedAt @map("updated_at") @db.Timestamptz
+
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  guide         Guide         @relation(fields: [guideId], references: [id], onDelete: Cascade)
+  sourceMessage GuideMessage? @relation(fields: [sourceMessageId], references: [id], onDelete: SetNull)
+
+  @@index([userId, guideId])
+  @@map("guide_memory_items")
+}
+
+// ============================================================
+// BLOC F — Codex
+// ============================================================
+
+model Codex {
+  id             String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  codexType      CodexType   @map("codex_type")
+  ownerUserId    String?     @map("owner_user_id") @db.Uuid
+  pathId         String?     @map("path_id") @db.Uuid
+  guideId        String?     @map("guide_id") @db.Uuid
+  title          String
+  subtitle       String?
+  status         CodexStatus @default(published)
+  currentVersion Int         @default(1) @map("current_version")
+  isExportable   Boolean     @default(true) @map("is_exportable")
+  createdAt      DateTime    @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime    @updatedAt @map("updated_at") @db.Timestamptz
+
+  owner    User?          @relation("CodexOwner", fields: [ownerUserId], references: [id], onDelete: Cascade)
+  path     Path?          @relation("CodexPath", fields: [pathId], references: [id], onDelete: Cascade)
+  guide    Guide?         @relation("CodexGuide", fields: [guideId], references: [id], onDelete: SetNull)
+  versions CodexVersion[]
+  orders   CodexOrder[]
+
+  @@map("codexes")
+}
+
+model CodexVersion {
+  id               String     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  codexId          String     @map("codex_id") @db.Uuid
+  versionNumber    Int        @map("version_number")
+  title            String
+  summary          String?
+  content          Json       @default("{}")
+  pdfUrl           String?    @map("pdf_url")
+  coverAssetUrl    String?    @map("cover_asset_url")
+  createdByType    SenderType @default(member) @map("created_by_type")
+  createdByUserId  String?    @map("created_by_user_id") @db.Uuid
+  createdAt        DateTime   @default(now()) @map("created_at") @db.Timestamptz
+
+  codex     Codex  @relation(fields: [codexId], references: [id], onDelete: Cascade)
+  createdBy User?  @relation(fields: [createdByUserId], references: [id], onDelete: SetNull)
+  orders    CodexOrder[]
+
+  @@unique([codexId, versionNumber])
+  @@map("codex_versions")
+}
+
+model Manifesto {
+  id            String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  pathId        String?  @map("path_id") @db.Uuid
+  userId        String?  @map("user_id") @db.Uuid
+  title         String   @default("Manifeste")
+  content       String
+  versionNumber Int      @default(1) @map("version_number")
+  isCurrent     Boolean  @default(true) @map("is_current")
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  path Path? @relation("ManifestoPath", fields: [pathId], references: [id], onDelete: Cascade)
+  user User? @relation("ManifestoOwner", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([pathId])
+  @@index([userId])
+  @@map("manifestos")
+}
+
+model Principle {
+  id         String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  pathId     String?  @map("path_id") @db.Uuid
+  userId     String?  @map("user_id") @db.Uuid
+  content    String
+  orderIndex Int      @default(0) @map("order_index")
+  isActive   Boolean  @default(true) @map("is_active")
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  path Path? @relation("PrinciplePath", fields: [pathId], references: [id], onDelete: Cascade)
+  user User? @relation("PrincipleOwner", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("principles")
+}
+
+model CodexOrder {
+  id              String           @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId          String           @map("user_id") @db.Uuid
+  codexId         String           @map("codex_id") @db.Uuid
+  codexVersionId  String?          @map("codex_version_id") @db.Uuid
+  orderType       CodexOrderType   @map("order_type")
+  status          CodexOrderStatus @default(pending)
+  priceAmount     Int              @map("price_amount")
+  currency        String           @default("EUR")
+  pdfUrl          String?          @map("pdf_url")
+  deliveryAddress Json?            @map("delivery_address")
+  printVendorRef  String?          @map("print_vendor_ref")
+  createdAt       DateTime         @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt       DateTime         @updatedAt @map("updated_at") @db.Timestamptz
+
+  user         User          @relation(fields: [userId], references: [id], onDelete: Restrict)
+  codex        Codex         @relation(fields: [codexId], references: [id], onDelete: Restrict)
+  codexVersion CodexVersion? @relation(fields: [codexVersionId], references: [id], onDelete: SetNull)
+
+  @@map("codex_orders")
+}
+
+// ============================================================
+// BLOC G — Social
+// ============================================================
+
+model ContactRequest {
+  id             String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  senderUserId   String        @map("sender_user_id") @db.Uuid
+  receiverUserId String        @map("receiver_user_id") @db.Uuid
+  message        String?
+  status         ContactStatus @default(pending)
+  createdAt      DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  respondedAt    DateTime?     @map("responded_at") @db.Timestamptz
+
+  sender   User @relation("ContactSender", fields: [senderUserId], references: [id], onDelete: Cascade)
+  receiver User @relation("ContactReceiver", fields: [receiverUserId], references: [id], onDelete: Cascade)
+
+  @@index([receiverUserId, status])
+  @@map("contact_requests")
+}
+
+model Contact {
+  id         String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userOneId  String   @map("user_one_id") @db.Uuid
+  userTwoId  String   @map("user_two_id") @db.Uuid
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  userOne User @relation("ContactUserOne", fields: [userOneId], references: [id], onDelete: Cascade)
+  userTwo User @relation("ContactUserTwo", fields: [userTwoId], references: [id], onDelete: Cascade)
+
+  @@unique([userOneId, userTwoId])
+  @@map("contacts")
+}
+
+model DirectConversation {
+  id                  String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userOneId           String    @map("user_one_id") @db.Uuid
+  userTwoId           String    @map("user_two_id") @db.Uuid
+  lastMessagePreview  String?   @map("last_message_preview")
+  lastMessageAt       DateTime? @map("last_message_at") @db.Timestamptz
+  createdAt           DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  userOne  User            @relation("DirectConvUserOne", fields: [userOneId], references: [id], onDelete: Cascade)
+  userTwo  User            @relation("DirectConvUserTwo", fields: [userTwoId], references: [id], onDelete: Cascade)
+  messages DirectMessage[]
+
+  @@unique([userOneId, userTwoId])
+  @@map("direct_conversations")
+}
+
+model DirectMessage {
+  id             String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  conversationId String   @map("conversation_id") @db.Uuid
+  senderUserId   String   @map("sender_user_id") @db.Uuid
+  content        String
+  isRead         Boolean  @default(false) @map("is_read")
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  conversation DirectConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender       User               @relation(fields: [senderUserId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId, createdAt(sort: Asc)])
+  @@map("direct_messages")
+}
+
+model Follow {
+  id             String          @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  followerUserId String          @map("follower_user_id") @db.Uuid
+  followedType   FollowTargetType @map("followed_type")
+  followedId     String          @map("followed_id") @db.Uuid
+  createdAt      DateTime        @default(now()) @map("created_at") @db.Timestamptz
+
+  follower User @relation(fields: [followerUserId], references: [id], onDelete: Cascade)
+
+  @@unique([followerUserId, followedType, followedId])
+  @@map("follows")
+}
+
+model Invite {
+  id             String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  inviterUserId  String      @map("inviter_user_id") @db.Uuid
+  inviteType     InviteType  @default(app) @map("invite_type")
+  pathId         String?     @map("path_id") @db.Uuid
+  inviteCode     String      @unique @map("invite_code")
+  status         InviteStatus @default(pending)
+  invitedEmail   String?     @map("invited_email")
+  acceptedUserId String?     @unique @map("accepted_user_id") @db.Uuid
+  expiresAt      DateTime    @map("expires_at") @db.Timestamptz
+  createdAt      DateTime    @default(now()) @map("created_at") @db.Timestamptz
+  acceptedAt     DateTime?   @map("accepted_at") @db.Timestamptz
+
+  inviter      User            @relation("InviteInviter", fields: [inviterUserId], references: [id], onDelete: Cascade)
+  acceptedUser User?           @relation("InviteAccepted", fields: [acceptedUserId], references: [id], onDelete: SetNull)
+  path         Path?           @relation(fields: [pathId], references: [id], onDelete: Cascade)
+  reward       ReferralReward?
+
+  @@map("invites")
+}
+
+model ReferralReward {
+  id            String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  inviteId      String   @unique @map("invite_id") @db.Uuid
+  inviterUserId String   @map("inviter_user_id") @db.Uuid
+  inviteeUserId String   @map("invitee_user_id") @db.Uuid
+  rewardType    String   @map("reward_type")
+  rewardValue   Int?     @map("reward_value")
+  isGranted     Boolean  @default(false) @map("is_granted")
+  grantedAt     DateTime? @map("granted_at") @db.Timestamptz
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  invite  Invite @relation(fields: [inviteId], references: [id], onDelete: Cascade)
+  inviter User   @relation("ReferralInviter", fields: [inviterUserId], references: [id], onDelete: Cascade)
+  invitee User   @relation("ReferralInvitee", fields: [inviteeUserId], references: [id], onDelete: Cascade)
+
+  @@map("referral_rewards")
+}
+
+model Notification {
+  id         String           @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId     String           @map("user_id") @db.Uuid
+  type       NotificationType
+  title      String
+  body       String
+  isRead     Boolean          @default(false) @map("is_read")
+  entityType String?          @map("entity_type")
+  entityId   String?          @map("entity_id") @db.Uuid
+  createdAt  DateTime         @default(now()) @map("created_at") @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@map("notifications")
+}
+
+// ============================================================
+// BLOC H — Billing
+// ============================================================
+
+model SubscriptionPlan {
+  id            String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  planKey       String        @unique @map("plan_key")
+  title         String
+  description   String?
+  billingPeriod BillingPeriod @map("billing_period")
+  priceAmount   Int           @default(0) @map("price_amount")
+  currency      String        @default("EUR")
+  stripePriceId String?       @map("stripe_price_id")
+  features      Json          @default("[]")
+  isActive      Boolean       @default(true) @map("is_active")
+  createdAt     DateTime      @default(now()) @map("created_at") @db.Timestamptz
+
+  subscriptions UserSubscription[]
+
+  @@map("subscription_plans")
+}
+
+model UserSubscription {
+  id                    String             @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId                String             @map("user_id") @db.Uuid
+  planId                String             @map("plan_id") @db.Uuid
+  provider              String             @default("stripe")
+  providerSubscriptionId String?           @map("provider_subscription_id")
+  providerCustomerId    String?            @map("provider_customer_id")
+  status                SubscriptionStatus @default(active)
+  currentPeriodStart    DateTime           @map("current_period_start") @db.Timestamptz
+  currentPeriodEnd      DateTime           @map("current_period_end") @db.Timestamptz
+  cancelAtPeriodEnd     Boolean            @default(false) @map("cancel_at_period_end")
+  canceledAt            DateTime?          @map("canceled_at") @db.Timestamptz
+  createdAt             DateTime           @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt             DateTime           @updatedAt @map("updated_at") @db.Timestamptz
+
+  user User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan SubscriptionPlan @relation(fields: [planId], references: [id], onDelete: Restrict)
+
+  @@index([userId])
+  @@map("user_subscriptions")
+}
+
+model Product {
+  id            String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  productKey    String      @unique @map("product_key")
+  title         String
+  description   String?
+  productType   ProductType @map("product_type")
+  priceAmount   Int         @map("price_amount")
+  currency      String      @default("EUR")
+  stripePriceId String?     @map("stripe_price_id")
+  payload       Json        @default("{}")
+  isActive      Boolean     @default(true) @map("is_active")
+  createdAt     DateTime    @default(now()) @map("created_at") @db.Timestamptz
+
+  purchases Purchase[]
+
+  @@map("products")
+}
+
+model Purchase {
+  id                String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId            String        @map("user_id") @db.Uuid
+  productId         String        @map("product_id") @db.Uuid
+  provider          String        @default("stripe")
+  providerPaymentId String?       @map("provider_payment_id")
+  status            PurchaseStatus @default(pending)
+  amountPaid        Int           @map("amount_paid")
+  currency          String        @default("EUR")
+  productSnapshot   Json          @default("{}") @map("product_snapshot")
+  purchasedAt       DateTime      @default(now()) @map("purchased_at") @db.Timestamptz
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+
+  @@map("purchases")
+}
+
+model UserEntitlement {
+  id              String            @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId          String            @map("user_id") @db.Uuid
+  entitlementType String            @map("entitlement_type")
+  entitlementKey  String            @map("entitlement_key")
+  sourceType      EntitlementSource @map("source_type")
+  sourceId        String?           @map("source_id") @db.Uuid
+  activeUntil     DateTime?         @map("active_until") @db.Timestamptz
+  isActive        Boolean           @default(true) @map("is_active")
+  createdAt       DateTime          @default(now()) @map("created_at") @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isActive])
+  @@map("user_entitlements")
+}
+
+// ============================================================
+// BLOC I — Sécurité et modération
+// ============================================================
+
+model Report {
+  id             String           @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  reporterUserId String           @map("reporter_user_id") @db.Uuid
+  targetType     ReportTargetType @map("target_type")
+  targetId       String           @map("target_id") @db.Uuid
+  reasonKey      String           @map("reason_key")
+  detailsText    String?          @map("details_text")
+  status         ReportStatus     @default(pending)
+  assignedTo     String?          @map("assigned_to") @db.Uuid
+  moderatorNote  String?          @map("moderator_note")
+  createdAt      DateTime         @default(now()) @map("created_at") @db.Timestamptz
+  resolvedAt     DateTime?        @map("resolved_at") @db.Timestamptz
+
+  reporter           User               @relation("ReportReporter", fields: [reporterUserId], references: [id], onDelete: Cascade)
+  assignedModerator  User?              @relation("ReportAssigned", fields: [assignedTo], references: [id], onDelete: SetNull)
+  moderationActions  ModerationAction[]
+
+  @@index([status])
+  @@index([targetType, targetId])
+  @@map("reports")
+}
+
+model ModerationAction {
+  id              String               @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  moderatorUserId String               @map("moderator_user_id") @db.Uuid
+  reportId        String?              @map("report_id") @db.Uuid
+  targetType      String               @map("target_type")
+  targetId        String               @map("target_id") @db.Uuid
+  actionType      ModerationActionType @map("action_type")
+  reasonText      String               @map("reason_text")
+  expiresAt       DateTime?            @map("expires_at") @db.Timestamptz
+  createdAt       DateTime             @default(now()) @map("created_at") @db.Timestamptz
+
+  moderator User    @relation("ModerationModerator", fields: [moderatorUserId], references: [id], onDelete: Restrict)
+  report    Report? @relation(fields: [reportId], references: [id], onDelete: SetNull)
+
+  @@map("moderation_actions")
+}
+
+model Block {
+  id            String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  blockerUserId String   @map("blocker_user_id") @db.Uuid
+  blockedUserId String   @map("blocked_user_id") @db.Uuid
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  blocker User @relation("BlockBlocker", fields: [blockerUserId], references: [id], onDelete: Cascade)
+  blocked User @relation("BlockBlocked", fields: [blockedUserId], references: [id], onDelete: Cascade)
+
+  @@unique([blockerUserId, blockedUserId])
+  @@map("blocks")
+}
+
+model VerificationRequest {
+  id             String                    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId         String                    @map("user_id") @db.Uuid
+  requestType    VerificationRequestType   @default(standard) @map("request_type")
+  status         VerificationRequestStatus @default(pending)
+  submittedData  Json                      @default("{}") @map("submitted_data")
+  reviewerUserId String?                   @map("reviewer_user_id") @db.Uuid
+  reviewerNote   String?                   @map("reviewer_note")
+  createdAt      DateTime                  @default(now()) @map("created_at") @db.Timestamptz
+  reviewedAt     DateTime?                 @map("reviewed_at") @db.Timestamptz
+
+  user     User  @relation("VerificationUser", fields: [userId], references: [id], onDelete: Cascade)
+  reviewer User? @relation("VerificationReviewer", fields: [reviewerUserId], references: [id], onDelete: SetNull)
+
+  @@index([status])
+  @@map("verification_requests")
+}
+
+model AgeConsent {
+  id                      String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId                  String   @unique @map("user_id") @db.Uuid
+  declaredAgeGroup        String   @default("adult") @map("declared_age_group")
+  declaredAt              DateTime @default(now()) @map("declared_at") @db.Timestamptz
+  parentalConsentRequired Boolean  @default(false) @map("parental_consent_required")
+  parentalConsentStatus   String   @default("not_required") @map("parental_consent_status")
+  parentalEmail           String?  @map("parental_email")
+  consentReference        String?  @map("consent_reference")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("age_consents")
+}
+
+// ============================================================
+// BLOC J — Admin et analytics
+// ============================================================
+
+model AdminRole {
+  id          String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  roleKey     String   @unique @map("role_key")
+  title       String
+  description String?
+  permissions Json     @default("{}")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  userAdminRoles UserAdminRole[]
+
+  @@map("admin_roles")
+}
+
+model UserAdminRole {
+  id               String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId           String   @map("user_id") @db.Uuid
+  adminRoleId      String   @map("admin_role_id") @db.Uuid
+  grantedByUserId  String?  @map("granted_by_user_id") @db.Uuid
+  grantedAt        DateTime @default(now()) @map("granted_at") @db.Timestamptz
+  isActive         Boolean  @default(true) @map("is_active")
+
+  user      User      @relation("AdminRoleUser", fields: [userId], references: [id], onDelete: Cascade)
+  adminRole AdminRole @relation(fields: [adminRoleId], references: [id], onDelete: Restrict)
+  grantedBy User?     @relation("AdminRoleGranter", fields: [grantedByUserId], references: [id], onDelete: SetNull)
+
+  @@unique([userId, adminRoleId])
+  @@map("user_admin_roles")
+}
+
+model AdminNote {
+  id           String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  targetType   String   @map("target_type")
+  targetId     String   @map("target_id") @db.Uuid
+  authorUserId String   @map("author_user_id") @db.Uuid
+  content      String
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  author User @relation("AdminNoteAuthor", fields: [authorUserId], references: [id], onDelete: Restrict)
+
+  @@index([targetType, targetId])
+  @@map("admin_notes")
+}
+
+model SystemSetting {
+  id               String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  settingKey       String   @unique @map("setting_key")
+  settingValue     Json     @map("setting_value")
+  description      String?
+  updatedByUserId  String?  @map("updated_by_user_id") @db.Uuid
+  updatedAt        DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@map("system_settings")
+}
+
+model AuditLog {
+  id           String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  actorUserId  String?  @map("actor_user_id") @db.Uuid
+  actorType    String   @default("user") @map("actor_type")
+  actionKey    String   @map("action_key")
+  targetType   String?  @map("target_type")
+  targetId     String?  @map("target_id") @db.Uuid
+  metadata     Json     @default("{}")
+  ipHash       String?  @map("ip_hash")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  actor User? @relation("AuditActor", fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  @@index([actorUserId, createdAt(sort: Desc)])
+  @@index([targetType, targetId, createdAt(sort: Desc)])
+  @@index([actionKey, createdAt(sort: Desc)])
+  @@index([createdAt(sort: Desc)])
+  @@map("audit_logs")
+}
+
+model AnalyticsEvent {
+  id         String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId     String?  @map("user_id") @db.Uuid
+  eventKey   String   @map("event_key")
+  eventData  Json     @default("{}") @map("event_data")
+  sessionId  String?  @map("session_id")
+  platform   String?
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([eventKey, createdAt(sort: Desc)])
+  @@index([userId, createdAt(sort: Desc)])
+  @@map("analytics_events")
+}
