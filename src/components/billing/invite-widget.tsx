@@ -25,8 +25,13 @@ export function InviteWidget({ stats, existingCodes }: InviteWidgetProps) {
     setError(null)
     startTransition(async () => {
       const result = await generateInviteAction()
-      if (result.success && result.data) setNewCode(result.data)
-      else setError('Impossible de générer un code. Réessaie.')
+      if (!result.success) {
+        setError(result.error)
+      } else if (result.data) {
+        setNewCode(result.data)
+      } else {
+        setError('Erreur inconnue lors de la génération.')
+      }
     })
   }
 
