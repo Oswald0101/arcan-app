@@ -82,7 +82,7 @@ export function AvatarPicker({ userId, currentAvatarUrl }: AvatarPickerProps) {
       {isOpen && (
         <div
           className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4"
-          style={{ background: 'hsl(246 32% 4% / 0.85)', backdropFilter: 'blur(8px)' }}
+          style={{ background: 'hsl(246 32% 4% / 0.92)', WebkitBackdropFilter: 'blur(4px)', backdropFilter: 'blur(4px)' }}
           onClick={(e) => e.target === e.currentTarget && setIsOpen(false)}
         >
           <div
@@ -183,6 +183,7 @@ export function AvatarPicker({ userId, currentAvatarUrl }: AvatarPickerProps) {
                 style={{
                   borderTop: '1px solid hsl(248 20% 12%)',
                   color: 'hsl(248 10% 50%)',
+                  paddingBottom: 'env(safe-area-inset-bottom)',
                 }}
               >
                 Sauvegarde…

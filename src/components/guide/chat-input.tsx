@@ -47,8 +47,9 @@ export function ChatInput({ onSend, disabled, placeholder }: ChatInputProps) {
         disabled={disabled}
         placeholder={placeholder ?? 'Écrire un message…'}
         rows={1}
-        className="flex-1 resize-none rounded-xl px-4 py-2.5 text-sm leading-relaxed outline-none max-h-[180px] overflow-y-auto transition-all duration-200"
+        className="flex-1 resize-none rounded-xl px-4 py-2.5 leading-relaxed outline-none max-h-[180px] overflow-y-auto transition-all duration-200"
         style={{
+          fontSize: '16px',
           background: 'hsl(var(--input))',
           border: `1px solid ${hasContent ? 'hsl(38 52% 58% / 0.3)' : 'hsl(var(--border-bright))'}`,
           color: 'hsl(var(--foreground))',

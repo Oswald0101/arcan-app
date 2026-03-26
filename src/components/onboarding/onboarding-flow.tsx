@@ -36,6 +36,11 @@ export function OnboardingFlow({ lang }: OnboardingFlowProps) {
     return () => clearTimeout(timer)
   }, [error, clearError])
 
+  // Scroll en haut à chaque changement de bloc
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [currentBloc])
+
   if (isLoading) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">

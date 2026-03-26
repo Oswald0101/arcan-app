@@ -45,7 +45,8 @@ export function QuestionFreeText({ question, lang, value, onChange, disabled }: 
           })
         }
         rows={4}
-        className="w-full resize-none rounded-xl border border-border bg-background px-4 py-3 text-sm leading-relaxed outline-none ring-offset-background placeholder:text-muted-foreground/60 focus:ring-2 focus:ring-ring disabled:opacity-50"
+        className="w-full resize-none rounded-xl border border-border bg-background px-4 py-3 leading-relaxed outline-none ring-offset-background placeholder:text-muted-foreground/60 focus:ring-2 focus:ring-ring disabled:opacity-50"
+        style={{ fontSize: '16px' }}
       />
     </div>
   )
@@ -75,7 +76,7 @@ export function QuestionSingleChoice({ question, lang, value, onChange, disabled
                   answerChoice: option,
                 })
               }
-              className={`w-full rounded-xl border px-4 py-3 text-left text-sm transition-colors disabled:opacity-50 ${
+              className={`w-full rounded-xl border px-4 py-3 text-left text-base transition-colors disabled:opacity-50 ${
                 isSelected
                   ? 'border-foreground bg-foreground text-background'
                   : 'border-border bg-background hover:border-foreground/40 hover:bg-muted'

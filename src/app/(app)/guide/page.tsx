@@ -39,7 +39,7 @@ export default async function GuidePage() {
   return (
     <div
       className="flex flex-col"
-      style={{ height: 'calc(100dvh - 3.5rem - 4.5rem)' }}
+      style={{ height: 'calc(100dvh - 3.5rem - 6rem)' }}
     >
       {/* ── Header guide ── */}
       <div

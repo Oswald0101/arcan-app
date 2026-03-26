@@ -6,7 +6,8 @@ import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
 
 export async function GET(request: Request) {
-  const { searchParams, origin } = new URL(request.url)
+  const { searchParams, origin: requestOrigin } = new URL(request.url)
+  const origin = process.env.NEXT_PUBLIC_APP_URL || requestOrigin
   const code = searchParams.get('code')
   const next = searchParams.get('next') ?? '/accueil'
   const inviteCode = searchParams.get('invite')
@@ -28,6 +29,17 @@ export async function GET(request: Request) {
   }
 
   const userId = data.user.id
+
+  // Activer le compte + hydrater displayName depuis Google
+  const googleName = data.user.user_metadata?.full_name ?? data.user.user_metadata?.name ?? null
+  await Promise.all([
+    prisma.user.update({ where: { id: userId }, data: { accountStatus: 'active' } }).catch(() => null),
+    googleName ? prisma.profile.upsert({
+      where: { userId },
+      update: { displayName: googleName },
+      create: { userId, username: `user_${userId.slice(0, 8)}`, displayName: googleName, language: 'fr' },
+    }).catch(() => null) : Promise.resolve(),
+  ])
 
   // UNE seule passe Prisma en parallèle — évite la saturation du pool sur cold start
   // .catch(() => null/0) : si timeout, on redirige vers onboarding plutôt que crasher

@@ -419,6 +419,12 @@ export async function finalizeOnboarding(userId: string) {
       },
     })
 
+    // Activer le compte (était pending par défaut)
+    await tx.user.update({
+      where: { id: userId },
+      data: { accountStatus: 'active' },
+    })
+
     // Créer la progression membre initiale si elle n'existe pas
     await tx.userMemberProgress.upsert({
       where: { userId },

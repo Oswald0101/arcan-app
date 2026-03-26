@@ -121,10 +121,10 @@ export function BlocForm({
           {symbol}
         </div>
         <div>
-          <h2 className="font-serif text-2xl font-medium" style={{ color: 'hsl(38 22% 90%)' }}>
+          <h2 className="font-serif text-3xl font-medium" style={{ color: 'hsl(38 22% 90%)' }}>
             {label}
           </h2>
-          <p className="text-sm mt-1" style={{ color: 'hsl(248 8% 50%)' }}>
+          <p className="text-base mt-1" style={{ color: 'hsl(248 8% 50%)' }}>
             {intro}
           </p>
         </div>

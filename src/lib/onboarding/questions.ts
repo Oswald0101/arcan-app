@@ -91,6 +91,24 @@ export const BLOC_1: OnboardingQuestion[] = [
     ],
   },
   {
+    key: 'gender_identity',
+    type: 'single_choice' as const,
+    bloc: 1,
+    required: false,
+    labels: {
+      fr: 'Comment tu t\'identifies ?',
+      en: 'How do you identify?',
+      es: '¿Cómo te identificas?',
+      pt: 'Como você se identifica?',
+    },
+    options: {
+      fr: ['Homme', 'Femme', 'Non-binaire', 'Autre', 'Je préfère ne pas préciser'],
+      en: ['Man', 'Woman', 'Non-binary', 'Other', 'Prefer not to say'],
+      es: ['Hombre', 'Mujer', 'No binario', 'Otro', 'Prefiero no decir'],
+      pt: ['Homem', 'Mulher', 'Não-binário', 'Outro', 'Prefiro não dizer'],
+    },
+  },
+  {
     key: 'missing_today',
     type: 'free_text',
     bloc: 1,

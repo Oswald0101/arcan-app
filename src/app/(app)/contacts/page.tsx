@@ -7,6 +7,12 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = { title: 'Contacts — Voie' }
 
+/** Retourne true si le username est un placeholder auto-généré (user_xxxxxxxx) */
+function isAutoUsername(username: string | null | undefined): boolean {
+  if (!username) return true
+  return /^user_[0-9a-f]{8}$/i.test(username)
+}
+
 export default async function ContactsPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -28,19 +34,33 @@ export default async function ContactsPage() {
           <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
             Demandes reçues ({received.length})
           </p>
-          {received.map((req: any) => (
-            <div key={req.id} className="flex items-center justify-between rounded-xl border border-border p-3">
-              <Link href={`/profils/${req.sender?.profile?.username}`} className="flex items-center gap-3">
-                <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-xs font-medium">
-                  {(req.sender?.profile?.displayName ?? req.sender?.profile?.username ?? '?').slice(0, 1).toUpperCase()}
+          {received.map((req: any) => {
+            const username = req.sender?.profile?.username
+            const displayName = req.sender?.profile?.displayName ?? username ?? '?'
+            const showLink = !isAutoUsername(username)
+            return (
+              <div key={req.id} className="flex items-center justify-between rounded-xl border border-border p-3">
+                {showLink ? (
+                  <Link href={`/profils/${username}`} className="flex items-center gap-3">
+                    <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-xs font-medium">
+                      {displayName.slice(0, 1).toUpperCase()}
+                    </div>
+                    <span className="text-sm font-medium">@{username}</span>
+                  </Link>
+                ) : (
+                  <div className="flex items-center gap-3">
+                    <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-xs font-medium">
+                      {displayName.slice(0, 1).toUpperCase()}
+                    </div>
+                    <span className="text-sm font-medium">{displayName}</span>
+                  </div>
+                )}
+                <div className="flex gap-1.5">
+                  <ContactRequestButtons requestId={req.id} />
                 </div>
-                <span className="text-sm font-medium">@{req.sender?.profile?.username}</span>
-              </Link>
-              <div className="flex gap-1.5">
-                <ContactRequestButtons requestId={req.id} />
               </div>
-            </div>
-          ))}
+            )
+          })}
         </section>
       )}
 
@@ -52,28 +72,45 @@ export default async function ContactsPage() {
         {contacts.length === 0 ? (
           <p className="text-sm text-muted-foreground">Aucun contact pour l&apos;instant.</p>
         ) : (
-          contacts.map((c: any) => (
-            <Link
-              key={c.contactId}
-              href={`/profils/${c.profile?.username}`}
-              className="flex items-center justify-between rounded-xl border border-border p-3 hover:bg-muted/40"
-            >
+          contacts.map((c: any) => {
+            const username = c.profile?.username
+            const displayName = c.profile?.displayName ?? username
+            const showLink = !isAutoUsername(username)
+            const inner = (
               <div className="flex items-center gap-3">
                 <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-xs font-medium overflow-hidden">
                   {c.profile?.avatarUrl ? (
                     <img src={c.profile.avatarUrl} alt="" className="h-full w-full object-cover" />
                   ) : (
-                    (c.profile?.displayName ?? c.profile?.username ?? '?').slice(0, 1).toUpperCase()
+                    (displayName ?? '?').slice(0, 1).toUpperCase()
                   )}
                 </div>
                 <div>
-                  <p className="text-sm font-medium">{c.profile?.displayName ?? c.profile?.username}</p>
-                  <p className="text-xs text-muted-foreground">@{c.profile?.username}</p>
+                  <p className="text-sm font-medium">{displayName}</p>
+                  {!isAutoUsername(username) && (
+                    <p className="text-xs text-muted-foreground">@{username}</p>
+                  )}
                 </div>
               </div>
-              <span className="text-xs text-muted-foreground">→</span>
-            </Link>
-          ))
+            )
+            return showLink ? (
+              <Link
+                key={c.contactId}
+                href={`/profils/${username}`}
+                className="flex items-center justify-between rounded-xl border border-border p-3 hover:bg-muted/40"
+              >
+                {inner}
+                <span className="text-xs text-muted-foreground">→</span>
+              </Link>
+            ) : (
+              <div
+                key={c.contactId}
+                className="flex items-center justify-between rounded-xl border border-border p-3"
+              >
+                {inner}
+              </div>
+            )
+          })
         )}
       </section>
 
@@ -83,17 +120,31 @@ export default async function ContactsPage() {
           <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
             Demandes envoyées ({sent.length})
           </p>
-          {sent.map((req: any) => (
-            <div key={req.id} className="flex items-center justify-between rounded-xl border border-border p-3">
-              <Link href={`/profils/${req.receiver?.profile?.username}`} className="flex items-center gap-3">
-                <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-xs font-medium">
-                  {(req.receiver?.profile?.username ?? '?').slice(0, 1).toUpperCase()}
-                </div>
-                <span className="text-sm">@{req.receiver?.profile?.username}</span>
-              </Link>
-              <span className="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">En attente</span>
-            </div>
-          ))}
+          {sent.map((req: any) => {
+            const username = req.receiver?.profile?.username
+            const displayName = req.receiver?.profile?.displayName ?? username ?? '?'
+            const showLink = !isAutoUsername(username)
+            return (
+              <div key={req.id} className="flex items-center justify-between rounded-xl border border-border p-3">
+                {showLink ? (
+                  <Link href={`/profils/${username}`} className="flex items-center gap-3">
+                    <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-xs font-medium">
+                      {displayName.slice(0, 1).toUpperCase()}
+                    </div>
+                    <span className="text-sm">@{username}</span>
+                  </Link>
+                ) : (
+                  <div className="flex items-center gap-3">
+                    <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-xs font-medium">
+                      {displayName.slice(0, 1).toUpperCase()}
+                    </div>
+                    <span className="text-sm">{displayName}</span>
+                  </div>
+                )}
+                <span className="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">En attente</span>
+              </div>
+            )
+          })}
         </section>
       )}
     </div>

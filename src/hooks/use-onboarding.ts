@@ -37,21 +37,18 @@ export function useOnboarding() {
       if (!mounted) return
 
       if (result.success && result.data) {
-        const { sessionId, currentBloc, answeredKeys } = result.data
+        const { sessionId, currentBloc, savedAnswers } = result.data
 
-        // Reconstruit un état partiel depuis les clés répondues
-        // Les valeurs réelles ne sont pas rechargées — juste les clés
-        // pour savoir quelles questions ont été répondues
-        const answersFromKeys: Record<string, AnswerPayload> = {}
-        for (const key of answeredKeys) {
-          answersFromKeys[key] = { questionKey: key, questionType: 'free_text' }
+        const answersMap: Record<string, AnswerPayload> = {}
+        for (const answer of savedAnswers) {
+          answersMap[answer.questionKey] = answer
         }
 
         setState((prev) => ({
           ...prev,
           sessionId,
           currentBloc,
-          answers: answersFromKeys,
+          answers: answersMap,
         }))
       } else {
         setState((prev) => ({ ...prev, error: result.error }))
