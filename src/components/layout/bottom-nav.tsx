@@ -5,11 +5,13 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useLang, t } from '@/lib/i18n'
+import type { DictKey } from '@/lib/i18n/dict'
 
-const NAV_ITEMS = [
+const NAV_ITEMS: { href: string; labelKey: DictKey; icon: (active: boolean) => React.ReactNode }[] = [
   {
     href: '/accueil',
-    label: 'Accueil',
+    labelKey: 'nav_home',
     icon: (active: boolean) => (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
         <path d="M3 12L12 4l9 8" stroke="currentColor" strokeWidth={active ? 2 : 1.5} strokeLinecap="round" strokeLinejoin="round" />
@@ -19,7 +21,7 @@ const NAV_ITEMS = [
   },
   {
     href: '/guide',
-    label: 'Guide',
+    labelKey: 'nav_guide',
     icon: (active: boolean) => (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
         <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth={active ? 2 : 1.5} />
@@ -29,7 +31,7 @@ const NAV_ITEMS = [
   },
   {
     href: '/cercles',
-    label: 'Voies',
+    labelKey: 'nav_paths',
     icon: (active: boolean) => (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
         <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth={active ? 2 : 1.5} fill={active ? 'currentColor' : 'none'} fillOpacity={active ? 0.08 : 0} />
@@ -40,7 +42,7 @@ const NAV_ITEMS = [
   },
   {
     href: '/community',
-    label: 'Communauté',
+    labelKey: 'nav_community',
     icon: (active: boolean) => (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
         <circle cx="9" cy="8" r="3.5" stroke="currentColor" strokeWidth={active ? 2 : 1.5} fill={active ? 'currentColor' : 'none'} fillOpacity={active ? 0.15 : 0} />
@@ -52,7 +54,7 @@ const NAV_ITEMS = [
   },
   {
     href: '/profil',
-    label: 'Profil',
+    labelKey: 'nav_profile',
     icon: (active: boolean) => (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
         <circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth={active ? 2 : 1.5} fill={active ? 'currentColor' : 'none'} fillOpacity={active ? 0.18 : 0} />
@@ -64,6 +66,7 @@ const NAV_ITEMS = [
 
 export function BottomNav() {
   const pathname = usePathname()
+  const lang = useLang()
 
   return (
     <nav
@@ -147,7 +150,7 @@ export function BottomNav() {
                 whiteSpace: 'nowrap',
                 marginTop: 2,
               }}>
-                {item.label}
+                {t(lang, item.labelKey)}
               </span>
 
               {/* Point indicateur doré sous l'icône active */}

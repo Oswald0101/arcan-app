@@ -5,11 +5,12 @@ export type Lang = 'fr' | 'en' | 'es' | 'pt'
 
 const dict = {
   // ── Navigation ──
-  nav_home:        { fr: 'Accueil',    en: 'Home',       es: 'Inicio',    pt: 'Início'    },
-  nav_guide:       { fr: 'Guide',      en: 'Guide',      es: 'Guía',      pt: 'Guia'      },
-  nav_paths:       { fr: 'Voies',      en: 'Paths',      es: 'Vías',      pt: 'Vias'      },
-  nav_codex:       { fr: 'Codex',      en: 'Codex',      es: 'Códex',     pt: 'Codex'     },
-  nav_profile:     { fr: 'Profil',     en: 'Profile',    es: 'Perfil',    pt: 'Perfil'    },
+  nav_home:        { fr: 'Accueil',    en: 'Home',       es: 'Inicio',    pt: 'Início'      },
+  nav_guide:       { fr: 'Guide',      en: 'Guide',      es: 'Guía',      pt: 'Guia'        },
+  nav_paths:       { fr: 'Voies',      en: 'Paths',      es: 'Vías',      pt: 'Vias'        },
+  nav_community:   { fr: 'Communauté', en: 'Community',  es: 'Comunidad', pt: 'Comunidade'  },
+  nav_codex:       { fr: 'Codex',      en: 'Codex',      es: 'Códex',     pt: 'Codex'       },
+  nav_profile:     { fr: 'Profil',     en: 'Profile',    es: 'Perfil',    pt: 'Perfil'      },
 
   // ── Accueil ──
   greeting_morning:   { fr: 'Bonjour,',        en: 'Good morning,',   es: 'Buenos días,',    pt: 'Bom dia,'      },
