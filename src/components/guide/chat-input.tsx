@@ -50,35 +50,16 @@ export function ChatInput({ onSend, disabled, placeholder }: ChatInputProps) {
         disabled={disabled}
         placeholder={placeholder ?? 'Écrire un message…'}
         rows={1}
-        className="textarea flex-1 resize-none max-h-[200px] overflow-y-auto"
-        style={{
-          fontSize: '16px',
-          minHeight: '44px',
-          paddingTop: '12px',
-          paddingBottom: '12px',
-        }}
+        className="input-chat"
+        style={{ fontSize: '16px', minHeight: '48px' }}
       />
       <button
         type="submit"
         disabled={disabled || !hasContent}
-        className="flex-shrink-0 rounded-lg transition-all duration-200 active:scale-95"
-        style={{
-          background: hasContent ? 'hsl(38 52% 58%)' : 'hsl(248 28% 11%)',
-          color: hasContent ? 'hsl(246 40% 5%)' : 'hsl(248 10% 40%)',
-          border: hasContent ? '1px solid hsl(38 52% 58%)' : '1px solid hsl(248 22% 16%)',
-          boxShadow: hasContent ? '0 4px 12px hsl(38 52% 58% / 0.25)' : 'none',
-          padding: '12px 14px',
-          minWidth: '44px',
-          minHeight: '44px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          opacity: disabled ? 0.5 : 1,
-          cursor: disabled ? 'not-allowed' : 'pointer',
-        }}
+        className="btn-send"
         aria-label="Envoyer"
       >
-        <svg className="h-5 w-5" fill="none" viewBox="0 0 16 16">
+        <svg width="18" height="18" viewBox="0 0 16 16" fill="none">
           <path
             d="M2 8l12-6-6 12V8H2z"
             stroke="currentColor" strokeWidth="1.5"

@@ -1,7 +1,7 @@
 'use client'
 
 // src/components/guide/message-bubble.tsx
-// Refonte : Bulles de chat premium, lisibilité mobile
+// Bulles premium : glassmorphism guide, gradient user, timestamps
 
 import type { ChatMessage } from '@/hooks/use-guide-chat'
 
@@ -9,54 +9,73 @@ interface MessageBubbleProps {
   message: ChatMessage
 }
 
+function formatTime(date: Date | string | undefined) {
+  if (!date) return ''
+  try {
+    const d = typeof date === 'string' ? new Date(date) : date
+    return d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
+  } catch { return '' }
+}
+
 export function MessageBubble({ message }: MessageBubbleProps) {
   const isMember = message.senderType === 'member'
+  const time = formatTime((message as any).createdAt)
+
+  if (isMember) {
+    return (
+      <div className="flex flex-col items-end gap-1">
+        <div className="bubble-user">
+          {message.isStreaming && !message.content ? (
+            <span style={{ color: 'hsl(248 10% 55%)' }}>…</span>
+          ) : (
+            <p className="whitespace-pre-wrap break-words">{message.content}</p>
+          )}
+        </div>
+        {time && (
+          <span style={{ fontSize: '11px', color: 'hsl(248 10% 36%)', paddingRight: 4 }}>
+            {time}
+          </span>
+        )}
+      </div>
+    )
+  }
 
   return (
-    <div className={`flex items-end gap-3 ${isMember ? 'justify-end' : 'justify-start'}`}>
-
-      {/* Avatar guide */}
-      {!isMember && (
+    <div className="flex flex-col items-start gap-1">
+      <div className="flex items-end gap-2.5">
+        {/* Orbe guide */}
         <div
-          className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-sm select-none mb-1 font-medium"
+          className="flex-shrink-0 flex items-center justify-center select-none"
           style={{
-            background: 'hsl(38 52% 58% / 0.12)',
-            border: '1px solid hsl(38 52% 58% / 0.22)',
-            color: 'hsl(38 52% 65%)',
-            boxShadow: '0 0 12px hsl(38 52% 58% / 0.08)',
+            width: 30, height: 30,
+            borderRadius: '50%',
+            background: 'radial-gradient(circle at 35% 35%, hsl(38 54% 62% / 0.18), hsl(265 55% 30% / 0.10))',
+            border: '1px solid hsl(38 54% 62% / 0.22)',
+            color: 'hsl(38 60% 68%)',
+            fontSize: '13px',
+            boxShadow: '0 0 10px hsl(38 54% 62% / 0.10)',
+            marginBottom: 2,
           }}
         >
           ◎
         </div>
-      )}
-
-      {/* Bulle — zones de frappe et lisibilité augmentées */}
-      <div
-        className="max-w-[82%] rounded-2xl px-4 py-3.5 text-base leading-relaxed"
-        style={
-          isMember
-            ? {
-                background: 'hsl(38 52% 58% / 0.14)',
-                border: '1px solid hsl(38 52% 58% / 0.24)',
-                color: 'hsl(38 22% 92%)',
-                borderBottomRightRadius: '6px',
-                boxShadow: '0 2px 8px hsl(38 52% 58% / 0.08)',
-              }
-            : {
-                background: 'hsl(var(--surface-elevated))',
-                border: '1px solid hsl(248 22% 16%)',
-                color: 'hsl(38 22% 88%)',
-                borderBottomLeftRadius: '6px',
-                boxShadow: 'inset 0 1px 0 hsl(248 100% 100% / 0.04)',
-              }
-        }
-      >
-        {message.isStreaming && !message.content ? (
-          <span style={{ color: 'hsl(248 10% 50%)' }}>…</span>
-        ) : (
-          <p className="whitespace-pre-wrap break-words">{message.content}</p>
-        )}
+        <div className="bubble-guide">
+          {message.isStreaming && !message.content ? (
+            <div className="flex gap-1.5">
+              <span className="typing-dot" />
+              <span className="typing-dot" />
+              <span className="typing-dot" />
+            </div>
+          ) : (
+            <p className="whitespace-pre-wrap break-words">{message.content}</p>
+          )}
+        </div>
       </div>
+      {time && (
+        <span style={{ fontSize: '11px', color: 'hsl(248 10% 36%)', paddingLeft: 40 }}>
+          {time}
+        </span>
+      )}
     </div>
   )
 }
