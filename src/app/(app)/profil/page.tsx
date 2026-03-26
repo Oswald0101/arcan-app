@@ -7,6 +7,7 @@ import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
 import { LogoutButton } from '@/components/auth/logout-button'
 import { UserAvatar } from '@/components/profile/user-avatar'
+import { LangSwitcher } from '@/components/i18n/lang-switcher'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = { title: 'Mon profil — Voie' }
@@ -235,6 +236,12 @@ export default async function ProfilPage() {
           </div>
         </section>
       )}
+
+      {/* ── Langue ── */}
+      <div className="card p-5 space-y-3 animate-fade-up delay-200">
+        <p className="label-section">Langue / Language</p>
+        <LangSwitcher />
+      </div>
 
       {/* ── Navigation ── */}
       <nav className="card space-y-1 p-2 animate-fade-up delay-200">

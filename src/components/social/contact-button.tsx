@@ -2,12 +2,14 @@
 'use client'
 
 import { useState, useTransition } from 'react'
+import { useRouter } from 'next/navigation'
 import {
   sendContactRequestAction,
   cancelContactRequestAction,
   respondToContactRequestAction,
   blockUserAction,
   reportAction,
+  openConversationAction,
 } from '@/lib/social/actions'
 import type { ReportReasonKey } from '@/types/social'
 import { REPORT_REASONS, REPORT_REASON_LABELS } from '@/types/social'
@@ -33,6 +35,7 @@ export function ContactButton({
   const [error, setError] = useState<string | null>(null)
   const [showReportModal, setShowReportModal] = useState(false)
   const [showBlockConfirm, setShowBlockConfirm] = useState(false)
+  const router = useRouter()
 
   function handleSendRequest() {
     setError(null)
@@ -63,6 +66,17 @@ export function ContactButton({
     })
   }
 
+  function handleOpenMessage() {
+    startTransition(async () => {
+      const result = await openConversationAction(targetUserId)
+      if (result.success && result.data?.conversationId) {
+        router.push(`/messages/${result.data.conversationId}`)
+      } else {
+        router.push('/messages')
+      }
+    })
+  }
+
   function handleBlock() {
     setError(null)
     setShowBlockConfirm(false)
@@ -87,20 +101,28 @@ export function ContactButton({
   }
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-3">
       {/* Action principale selon le statut */}
       {status === null && (
         <button
           onClick={handleSendRequest}
           disabled={isPending}
-          className="w-full rounded-xl border border-border px-4 py-2.5 text-sm font-medium transition-colors hover:bg-muted disabled:opacity-50"
+          className="btn-primary w-full py-3 text-sm font-medium"
+          style={{ minHeight: '48px' }}
         >
           {isPending ? 'Chargement…' : 'Demander en contact'}
         </button>
       )}
 
       {status === 'pending' && (
-        <div className="w-full rounded-xl bg-muted/40 border border-border px-4 py-2.5 text-sm text-center text-muted-foreground">
+        <div
+          className="w-full rounded-xl px-4 py-3 text-sm text-center"
+          style={{
+            background: 'hsl(248 30% 8%)',
+            border: '1px solid hsl(248 22% 16%)',
+            color: 'hsl(248 10% 50%)',
+          }}
+        >
           Demande envoyée
         </div>
       )}
@@ -110,14 +132,16 @@ export function ContactButton({
           <button
             onClick={() => handleAccept()}
             disabled={isPending}
-            className="flex-1 rounded-xl bg-foreground px-4 py-2.5 text-sm font-medium text-background disabled:opacity-50"
+            className="btn-primary flex-1 py-3 text-sm font-medium"
+            style={{ minHeight: '48px' }}
           >
             Accepter
           </button>
           <button
             onClick={() => handleCancel()}
             disabled={isPending}
-            className="flex-1 rounded-xl border border-border px-4 py-2.5 text-sm font-medium transition-colors hover:bg-muted disabled:opacity-50"
+            className="btn-ghost flex-1 py-3 text-sm font-medium"
+            style={{ minHeight: '48px' }}
           >
             Refuser
           </button>
@@ -125,22 +149,29 @@ export function ContactButton({
       )}
 
       {status === 'contact' && (
-        <div className="w-full rounded-xl bg-muted/40 border border-border px-4 py-2.5 text-sm text-center text-muted-foreground">
-          En contact
-        </div>
+        <button
+          onClick={handleOpenMessage}
+          disabled={isPending}
+          className="btn-primary w-full py-3 text-sm font-medium"
+          style={{ minHeight: '48px' }}
+        >
+          {isPending ? 'Ouverture…' : '✉ Envoyer un message'}
+        </button>
       )}
 
       {/* Actions secondaires */}
-      <div className="flex justify-center gap-4">
+      <div className="flex justify-center gap-5 pt-1">
         <button
           onClick={() => setShowBlockConfirm(true)}
-          className="text-xs text-muted-foreground hover:text-destructive"
+          className="text-xs transition-colors hover:text-red-400"
+          style={{ color: 'hsl(248 10% 40%)' }}
         >
           Bloquer
         </button>
         <button
           onClick={() => setShowReportModal(true)}
-          className="text-xs text-muted-foreground hover:text-foreground"
+          className="text-xs transition-colors hover:opacity-80"
+          style={{ color: 'hsl(248 10% 40%)' }}
         >
           Signaler
         </button>

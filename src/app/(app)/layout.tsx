@@ -5,13 +5,26 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
-import { cookies } from 'next/headers'
+import { cookies, headers } from 'next/headers'
 import { BottomNav } from '@/components/layout/bottom-nav'
 import { TopBar } from '@/components/layout/top-bar'
 import { LangProvider } from '@/lib/i18n/lang-context'
 import type { Lang } from '@/lib/i18n/dict'
 
 const VALID_LANGS: Lang[] = ['fr', 'en', 'es', 'pt']
+
+/** Extrait la langue préférée depuis le header Accept-Language */
+function parseBrowserLang(acceptLanguage: string | null): Lang {
+  if (!acceptLanguage) return 'fr'
+  // Ex: "en-US,en;q=0.9,fr;q=0.8,es;q=0.7"
+  const langs = acceptLanguage
+    .split(',')
+    .map((part) => part.split(';')[0].trim().toLowerCase().slice(0, 2))
+  for (const code of langs) {
+    if (VALID_LANGS.includes(code as Lang)) return code as Lang
+  }
+  return 'fr'
+}
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
@@ -41,13 +54,16 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   if (!profile?.onboardingCompleted) redirect('/onboarding')
 
-  // Résoudre la langue — priorité : cookie > DB > 'fr'
+  // Résoudre la langue — priorité : cookie > DB > navigateur (Accept-Language) > 'fr'
   const cookieStore = await cookies()
+  const headersList = await headers()
   const cookieLang = cookieStore.get('voie-lang')?.value as Lang | undefined
   const dbLang = profile.language as Lang
+  const browserLang = parseBrowserLang(headersList.get('accept-language'))
+
   const lang: Lang = (cookieLang && VALID_LANGS.includes(cookieLang))
     ? cookieLang
-    : (VALID_LANGS.includes(dbLang) ? dbLang : 'fr')
+    : (VALID_LANGS.includes(dbLang) ? dbLang : browserLang)
 
   return (
     <LangProvider lang={lang}>

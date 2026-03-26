@@ -14,12 +14,7 @@ import {
   type ProductCategory,
   type BoutiqueProduct,
 } from '@/lib/billing/boutique'
-import {
-  ProductVisual,
-  AvatarPackPreview,
-  ThemePreview,
-  PackContentsPreview,
-} from '@/lib/billing/product-visuals'
+import { ProductVisual } from '@/lib/billing/product-visuals'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = { title: 'Boutique — Arcan' }
@@ -218,34 +213,55 @@ interface ProductCardProps {
 }
 
 function ProductCard({ product, status }: ProductCardProps) {
-  const isOwned = status.owned
-  const isLocked = status.locked
-  const isPurchasable = status.purchasable
-  const price = formatPrice(product.priceCents)
+  const isIncluded = status === 'included'
+  const isOwned = status === 'owned'
+  const isFounderOnly = status === 'founder_only'
+  const isAvailable = status === 'available'
+  const isAccessible = isIncluded || isOwned
+  const price = formatPrice(product.priceAmount)
 
   return (
     <Link href={`/boutique/${product.key}`} className="block group">
       <div
         className="rounded-xl overflow-hidden card-hover"
         style={{
-          background: isOwned
+          background: isAccessible
             ? 'hsl(248 30% 8%)'
             : 'linear-gradient(145deg, hsl(250 35% 9%) 0%, hsl(260 38% 11%) 100%)',
-          border: `1px solid ${isOwned ? 'hsl(148 40% 35% / 0.25)' : isPurchasable ? 'hsl(38 52% 58% / 0.20)' : 'hsl(248 22% 14%)'}`,
+          border: `1px solid ${isAccessible ? 'hsl(148 40% 35% / 0.25)' : isAvailable ? 'hsl(38 52% 58% / 0.20)' : 'hsl(248 22% 14%)'}`,
           position: 'relative',
         }}
       >
-        {isPurchasable && !isOwned && <div className="top-line-gold" />}
+        {isAvailable && <div className="top-line-gold" />}
+
         {/* Visuel produit */}
         <div
-          className="relative aspect-video bg-gradient-to-br from-surface-elevated to-surface overflow-hidden flex items-center justify-center"
+          className="relative overflow-hidden flex items-center justify-center"
           style={{
             background: 'linear-gradient(135deg, hsl(250 35% 10%) 0%, hsl(260 40% 13%) 100%)',
+            height: '140px',
           }}
         >
-          <ProductVisual product={product} />
+          <ProductVisual
+            productKey={product.key}
+            category={product.category}
+            symbol={product.symbol}
+            isAccessible={isAccessible || isAvailable}
+          />
 
           {/* Badge statut */}
+          {isIncluded && (
+            <div
+              className="absolute top-3 right-3 px-3 py-1.5 rounded-lg text-xs font-semibold"
+              style={{
+                background: 'hsl(148 50% 40% / 0.20)',
+                border: '1px solid hsl(148 50% 40% / 0.40)',
+                color: 'hsl(148 52% 58%)',
+              }}
+            >
+              ✓ Inclus
+            </div>
+          )}
           {isOwned && (
             <div
               className="absolute top-3 right-3 px-3 py-1.5 rounded-lg text-xs font-semibold"
@@ -258,16 +274,29 @@ function ProductCard({ product, status }: ProductCardProps) {
               ✓ Possédé
             </div>
           )}
-          {isLocked && (
+          {isFounderOnly && (
             <div
               className="absolute top-3 right-3 px-3 py-1.5 rounded-lg text-xs font-semibold"
               style={{
-                background: 'hsl(248 30% 20% / 0.40)',
-                border: '1px solid hsl(248 20% 30% / 0.40)',
-                color: 'hsl(248 10% 60%)',
+                background: 'hsl(38 52% 58% / 0.12)',
+                border: '1px solid hsl(38 52% 58% / 0.25)',
+                color: 'hsl(38 62% 68%)',
               }}
             >
-              🔒 Verrouillé
+              ★ Fondateur
+            </div>
+          )}
+          {product.isNew && (
+            <div
+              className="absolute top-3 left-3 px-2 py-1 rounded text-xs font-bold"
+              style={{
+                background: 'hsl(265 55% 50% / 0.30)',
+                border: '1px solid hsl(265 55% 50% / 0.40)',
+                color: 'hsl(265 70% 80%)',
+                letterSpacing: '0.05em',
+              }}
+            >
+              NOUVEAU
             </div>
           )}
         </div>
@@ -279,31 +308,40 @@ function ProductCard({ product, status }: ProductCardProps) {
               className="font-serif text-lg font-medium"
               style={{ color: 'hsl(38 22% 90%)' }}
             >
-              {product.name}
+              {product.title}
             </h3>
-            <p className="text-sm mt-1" style={{ color: 'hsl(248 10% 48%)' }}>
+            <p className="text-xs mt-0.5 font-medium" style={{ color: 'hsl(38 52% 58%)' }}>
+              {product.subtitle}
+            </p>
+            <p className="text-sm mt-2" style={{ color: 'hsl(248 10% 48%)' }}>
               {product.description}
             </p>
           </div>
 
           {/* Pied de carte */}
-          <div className="flex items-center justify-between pt-2">
-            <div className="flex items-center gap-2">
-              {product.tags?.map((tag) => (
+          <div className="flex items-center justify-between pt-1">
+            <div />
+            {isAvailable && (
+              <div className="flex items-center gap-2">
+                {product.originalAmount && (
+                  <span
+                    className="text-sm"
+                    style={{ color: 'hsl(248 10% 38%)', textDecoration: 'line-through' }}
+                  >
+                    {formatPrice(product.originalAmount)}
+                  </span>
+                )}
                 <span
-                  key={tag}
-                  className="badge badge-muted text-xs"
+                  className="text-base font-semibold"
+                  style={{ color: 'hsl(38 52% 65%)' }}
                 >
-                  {tag}
+                  {price}
                 </span>
-              ))}
-            </div>
-            {!isOwned && isPurchasable && (
-              <span
-                className="text-base font-semibold"
-                style={{ color: 'hsl(38 52% 65%)' }}
-              >
-                {price}
+              </div>
+            )}
+            {isFounderOnly && (
+              <span className="text-xs" style={{ color: 'hsl(248 10% 42%)' }}>
+                Plan Fondateur requis
               </span>
             )}
           </div>
