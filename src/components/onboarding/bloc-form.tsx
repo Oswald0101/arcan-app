@@ -109,34 +109,49 @@ export function BlocForm({
         </div>
       </div>
 
-      {/* En-tête du bloc — plus imposant et immersif */}
-      <div className="text-center space-y-4 animate-fade-up">
-        <div
-          className="mx-auto h-14 w-14 rounded-full flex items-center justify-center text-2xl transition-all duration-500"
-          style={{
-            background: 'hsl(38 52% 58% / 0.08)',
-            border: '1px solid hsl(38 52% 58% / 0.20)',
-            color: 'hsl(38 52% 65%)',
-            boxShadow: '0 0 24px hsl(38 52% 58% / 0.08)',
-          }}
-        >
-          {symbol}
+      {/* En-tête bloc — immersif */}
+      <div className="text-center space-y-5 animate-fade-up">
+        {/* Orbe avec glow animé */}
+        <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{
+            position: 'absolute', inset: -18,
+            borderRadius: '50%',
+            background: 'radial-gradient(circle, hsl(38 54% 62% / 0.15) 0%, transparent 70%)',
+            animation: 'pulse-glow 3s ease-in-out infinite',
+          }} />
+          <div style={{
+            width: 68, height: 68,
+            borderRadius: '50%',
+            background: 'radial-gradient(circle at 35% 35%, hsl(38 54% 62% / 0.20), hsl(265 55% 30% / 0.10))',
+            border: '1px solid hsl(38 54% 62% / 0.30)',
+            color: 'hsl(38 65% 72%)',
+            fontSize: '28px',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            boxShadow: '0 0 30px hsl(38 54% 62% / 0.15)',
+          }}>
+            {symbol}
+          </div>
         </div>
-        <div>
+
+        <div className="space-y-2">
+          <p className="label-section" style={{ letterSpacing: '0.25em' }}>{label}</p>
           <h2
-            className="font-serif text-2xl font-medium"
-            style={{ color: 'hsl(38 14% 92%)' }}
+            style={{
+              fontFamily: "'Cormorant Garamond', Georgia, serif",
+              fontSize: 'clamp(30px, 8vw, 42px)',
+              fontWeight: 300,
+              lineHeight: 1.1,
+              letterSpacing: '-0.01em',
+              color: 'hsl(38 14% 93%)',
+            }}
           >
-            {label}
-          </h2>
-          <p className="text-base mt-2" style={{ color: 'hsl(248 10% 50%)' }}>
             {intro}
-          </p>
+          </h2>
         </div>
       </div>
 
-      {/* Ligne or */}
-      <div className="divider-gold" />
+      {/* Séparateur doré */}
+      <div className="sep-diamond">◆</div>
 
       {/* Questions — espacement amélioré */}
       <div className="space-y-9">

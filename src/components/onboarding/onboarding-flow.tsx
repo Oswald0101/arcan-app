@@ -82,42 +82,29 @@ export function OnboardingFlow({ lang }: OnboardingFlowProps) {
         lang={lang}
       />
 
-      {/* Header intro pour le premier bloc */}
+      {/* Header intro — premier bloc uniquement */}
       {currentBloc === 1 && (
-        <div className="space-y-4 text-center animate-fade-up">
-          <div
-            className="mx-auto h-16 w-16 rounded-full flex items-center justify-center text-3xl"
+        <div className="space-y-5 text-center animate-fade-up pb-2">
+          {/* Ligne dorée décorative */}
+          <div className="divider-gold" />
+          <h1
             style={{
-              background: 'hsl(38 52% 58% / 0.08)',
-              border: '1px solid hsl(38 52% 58% / 0.20)',
-              color: 'hsl(38 52% 65%)',
+              fontFamily: "'Cormorant Garamond', Georgia, serif",
+              fontSize: 'clamp(32px, 9vw, 48px)',
+              fontWeight: 300,
+              lineHeight: 1.05,
+              letterSpacing: '-0.02em',
+              color: 'hsl(38 14% 93%)',
             }}
           >
-            ◯
-          </div>
-          <div>
-            <h1
-              className="font-serif text-3xl font-medium"
-              style={{ color: 'hsl(38 14% 92%)' }}
-            >
-              {lang === 'fr'
-                ? 'Ta Voie commence ici.'
-                : lang === 'en'
-                ? 'Your Path starts here.'
-                : lang === 'es'
-                ? 'Tu Camino comienza aquí.'
-                : 'Seu Caminho começa aqui.'}
-            </h1>
-            <p className="text-base mt-3" style={{ color: 'hsl(248 10% 50%)' }}>
-              {lang === 'fr'
-                ? 'Réponds honnêtement. Plus tes réponses sont sincères, plus ta Voie sera juste et utile.'
-                : lang === 'en'
-                ? 'Answer honestly. The more sincere your answers, the more relevant your Path will be.'
-                : lang === 'es'
-                ? 'Responde honestamente. Cuanto más sinceras sean tus respuestas, más relevante será tu Camino.'
-                : 'Responda honestamente. Quanto mais sinceras suas respostas, mais relevante será seu Caminho.'}
-            </p>
-          </div>
+            {lang === 'fr' ? 'Ta Voie\ncommence ici.' : lang === 'en' ? 'Your Path\nstarts here.' : lang === 'es' ? 'Tu Camino\ncomienza aquí.' : 'Seu Caminho\ncomeça aqui.'}
+          </h1>
+          <p className="text-base leading-relaxed max-w-xs mx-auto" style={{ color: 'hsl(248 10% 48%)' }}>
+            {lang === 'fr'
+              ? 'Réponds honnêtement. Plus tu es sincère, plus ta Voie sera juste.'
+              : 'Answer honestly. The more sincere, the more relevant your Path.'}
+          </p>
+          <div className="divider-gold" />
         </div>
       )}
 

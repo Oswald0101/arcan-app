@@ -26,11 +26,19 @@ export function QuestionFreeText({ question, lang, value, onChange, disabled }: 
   const placeholder = question.placeholder?.[lang] ?? question.placeholder?.['fr'] ?? ''
 
   return (
-    <div className="space-y-3">
-      <label htmlFor={id} className="block text-lg font-medium leading-relaxed">
+    <div className="space-y-4">
+      <label htmlFor={id} className="block leading-relaxed" style={{
+        fontFamily: "'Cormorant Garamond', Georgia, serif",
+        fontSize: 'clamp(20px, 5vw, 26px)',
+        fontWeight: 400,
+        color: 'hsl(38 14% 90%)',
+        lineHeight: 1.25,
+      }}>
         {label}
         {!question.required && (
-          <span className="ml-2 text-sm font-normal text-muted-foreground">(facultatif)</span>
+          <span className="ml-2 text-sm font-normal" style={{ fontFamily: 'inherit', fontSize: '14px', color: 'hsl(248 10% 46%)', fontWeight: 400 }}>
+            (facultatif)
+          </span>
         )}
       </label>
       <textarea
@@ -47,10 +55,7 @@ export function QuestionFreeText({ question, lang, value, onChange, disabled }: 
         }
         rows={4}
         className="textarea"
-        style={{
-          fontSize: '16px',
-          minHeight: '120px',
-        }}
+        style={{ fontSize: '16px', minHeight: '120px' }}
       />
     </div>
   )
@@ -64,7 +69,13 @@ export function QuestionSingleChoice({ question, lang, value, onChange, disabled
 
   return (
     <div className="space-y-4">
-      <p className="text-lg font-medium leading-relaxed">{label}</p>
+      <p style={{
+        fontFamily: "'Cormorant Garamond', Georgia, serif",
+        fontSize: 'clamp(20px, 5vw, 26px)',
+        fontWeight: 400,
+        color: 'hsl(38 14% 90%)',
+        lineHeight: 1.25,
+      }}>{label}</p>
       <div className="space-y-3">
         {options.map((option) => {
           const isSelected = value?.answerChoice === option
@@ -80,22 +91,11 @@ export function QuestionSingleChoice({ question, lang, value, onChange, disabled
                   answerChoice: option,
                 })
               }
-              className="w-full rounded-lg border-2 px-4 py-4 text-left text-base font-medium transition-all duration-200 disabled:opacity-50 active:scale-95"
-              style={{
-                borderColor: isSelected ? 'hsl(38 52% 58%)' : 'hsl(248 22% 14%)',
-                background: isSelected
-                  ? 'hsl(38 52% 58% / 0.08)'
-                  : 'hsl(248 30% 6%)',
-                color: isSelected ? 'hsl(38 52% 65%)' : 'hsl(248 10% 50%)',
-                boxShadow: isSelected ? '0 0 20px hsl(38 52% 58% / 0.12)' : 'none',
-                minHeight: '48px',
-                display: 'flex',
-                alignItems: 'center',
-              }}
+              className={`choice-btn${isSelected ? ' selected' : ''} disabled:opacity-50`}
             >
               <span className="flex-1">{option}</span>
               {isSelected && (
-                <span style={{ color: 'hsl(38 52% 65%)', fontSize: '18px' }}>✓</span>
+                <span style={{ color: 'hsl(38 62% 68%)', fontSize: '16px', marginLeft: 8 }}>✓</span>
               )}
             </button>
           )
@@ -126,8 +126,14 @@ export function QuestionMultiChoice({ question, lang, value, onChange, disabled 
   return (
     <div className="space-y-4">
       <div>
-        <p className="text-lg font-medium leading-relaxed">{label}</p>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <p style={{
+          fontFamily: "'Cormorant Garamond', Georgia, serif",
+          fontSize: 'clamp(20px, 5vw, 26px)',
+          fontWeight: 400,
+          color: 'hsl(38 14% 90%)',
+          lineHeight: 1.25,
+        }}>{label}</p>
+        <p className="mt-1.5 text-sm" style={{ color: 'hsl(248 10% 46%)' }}>
           {lang === 'fr' ? 'Sélectionne tout ce qui s\'applique' : 'Select all that apply'}
         </p>
       </div>
@@ -140,26 +146,20 @@ export function QuestionMultiChoice({ question, lang, value, onChange, disabled 
               type="button"
               disabled={disabled}
               onClick={() => toggle(option)}
-              className="flex w-full items-center gap-3 rounded-lg border-2 px-4 py-4 text-left text-base font-medium transition-all duration-200 disabled:opacity-50 active:scale-95"
-              style={{
-                borderColor: isSelected ? 'hsl(38 52% 58%)' : 'hsl(248 22% 14%)',
-                background: isSelected
-                  ? 'hsl(38 52% 58% / 0.08)'
-                  : 'hsl(248 30% 6%)',
-                color: isSelected ? 'hsl(38 52% 65%)' : 'hsl(248 10% 50%)',
-                boxShadow: isSelected ? '0 0 20px hsl(38 52% 58% / 0.12)' : 'none',
-                minHeight: '48px',
-              }}
+              className={`choice-btn flex items-center gap-3${isSelected ? ' selected' : ''} disabled:opacity-50`}
             >
+              {/* Checkbox */}
               <span
-                className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded border-2 transition-all"
+                className="flex-shrink-0 flex items-center justify-center rounded transition-all"
                 style={{
-                  borderColor: isSelected ? 'hsl(38 52% 65%)' : 'hsl(248 22% 18%)',
-                  background: isSelected ? 'hsl(38 52% 58%)' : 'transparent',
+                  width: 20, height: 20,
+                  border: `2px solid ${isSelected ? 'hsl(38 54% 62%)' : 'hsl(248 22% 22%)'}`,
+                  background: isSelected ? 'hsl(38 54% 62%)' : 'transparent',
+                  borderRadius: 5,
                 }}
               >
                 {isSelected && (
-                  <svg className="h-3 w-3" fill="none" viewBox="0 0 10 8" style={{ color: 'hsl(246 40% 5%)' }}>
+                  <svg width="10" height="8" fill="none" viewBox="0 0 10 8" style={{ color: 'hsl(246 40% 5%)' }}>
                     <path d="M1 4l3 3 5-6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 )}
@@ -184,7 +184,13 @@ export function QuestionScale({ question, lang, value, onChange, disabled }: Que
 
   return (
     <div className="space-y-5">
-      <p className="text-lg font-medium leading-relaxed">{label}</p>
+      <p style={{
+        fontFamily: "'Cormorant Garamond', Georgia, serif",
+        fontSize: 'clamp(20px, 5vw, 26px)',
+        fontWeight: 400,
+        color: 'hsl(38 14% 90%)',
+        lineHeight: 1.25,
+      }}>{label}</p>
       <div className="flex gap-2">
         {steps.map((step) => {
           const isSelected = current === step
@@ -200,15 +206,20 @@ export function QuestionScale({ question, lang, value, onChange, disabled }: Que
                   answerScale: step,
                 })
               }
-              className="flex-1 rounded-lg border-2 py-4 text-base font-semibold transition-all duration-200 disabled:opacity-50 active:scale-95"
+              className="flex-1 transition-all duration-200 disabled:opacity-50 active:scale-95"
               style={{
-                borderColor: isSelected ? 'hsl(38 52% 58%)' : 'hsl(248 22% 14%)',
+                borderRadius: 12,
+                border: `1px solid ${isSelected ? 'hsl(38 54% 62%)' : 'hsl(248 22% 16%)'}`,
                 background: isSelected
-                  ? 'hsl(38 52% 58%)'
-                  : 'hsl(248 30% 6%)',
-                color: isSelected ? 'hsl(246 40% 5%)' : 'hsl(248 10% 50%)',
-                boxShadow: isSelected ? '0 0 20px hsl(38 52% 58% / 0.15)' : 'none',
-                minHeight: '48px',
+                  ? 'linear-gradient(145deg, hsl(38 62% 66%), hsl(38 52% 57%))'
+                  : 'hsl(248 30% 8%)',
+                color: isSelected ? 'hsl(246 42% 5%)' : 'hsl(248 10% 52%)',
+                fontWeight: 600,
+                fontSize: '16px',
+                minHeight: '52px',
+                boxShadow: isSelected
+                  ? 'inset 0 1px 0 hsl(38 100% 88% / 0.22), 0 4px 14px hsl(38 50% 35% / 0.35)'
+                  : 'none',
               }}
             >
               {step}
@@ -216,7 +227,7 @@ export function QuestionScale({ question, lang, value, onChange, disabled }: Que
           )
         })}
       </div>
-      <div className="flex justify-between text-xs text-muted-foreground">
+      <div className="flex justify-between text-xs" style={{ color: 'hsl(248 10% 42%)' }}>
         <span>{lang === 'fr' ? 'Peu' : 'Low'}</span>
         <span>{lang === 'fr' ? 'Beaucoup' : 'High'}</span>
       </div>
