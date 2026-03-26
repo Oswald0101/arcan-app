@@ -59,7 +59,9 @@ export default async function ProfilPage() {
     <div className="mx-auto max-w-lg px-4 py-6 space-y-6 pb-4 animate-fade-up">
 
       {/* ── Card profil principal ── */}
-      <div className="card-premium p-6 space-y-6">
+      <div className="card-premium p-6 space-y-6" style={{ position: 'relative', overflow: 'hidden' }}>
+        {/* Ligne dorée en haut */}
+        <div className="top-line-gold" />
 
         {/* Avatar + identité */}
         <div className="flex items-start gap-4">
@@ -166,31 +168,39 @@ export default async function ProfilPage() {
       </div>
 
       {/* ── Abonnement ── */}
-      <div className="card p-5 flex items-center justify-between animate-fade-up delay-100">
-        <div>
-          <p className="text-base font-medium" style={{ color: 'hsl(38 22% 88%)' }}>
-            {sub?.plan?.title ?? 'Plan Gratuit'}
-          </p>
-          {sub?.currentPeriodEnd && (
-            <p className="text-sm mt-1" style={{ color: 'hsl(248 10% 46%)' }}>
-              {sub.cancelAtPeriodEnd ? 'Se termine le ' : 'Renouvellement le '}
-              {new Date(sub.currentPeriodEnd).toLocaleDateString('fr-FR')}
-            </p>
-          )}
-          {!sub && (
-            <p className="text-sm mt-1" style={{ color: 'hsl(248 10% 46%)' }}>
-              Passe à Premium pour débloquer tout
-            </p>
-          )}
-        </div>
-        <Link
-          href="/abonnement"
-          className="text-sm font-medium transition-opacity hover:opacity-70"
-          style={{ color: 'hsl(38 52% 65%)' }}
+      <Link href="/abonnement" className="block animate-fade-up delay-100">
+        <div
+          className="card-hover rounded-xl p-5 flex items-center justify-between"
+          style={{
+            background: sub
+              ? 'linear-gradient(135deg, hsl(38 52% 58% / 0.08) 0%, hsl(265 40% 12% / 0.60) 100%)'
+              : 'hsl(248 30% 7%)',
+            border: `1px solid ${sub ? 'hsl(38 52% 58% / 0.22)' : 'hsl(248 22% 14%)'}`,
+            position: 'relative', overflow: 'hidden',
+          }}
         >
-          Gérer →
-        </Link>
-      </div>
+          {sub && <div className="top-line-gold" />}
+          <div>
+            <p className="text-base font-medium" style={{ color: 'hsl(38 22% 88%)' }}>
+              {sub?.plan?.title ?? 'Plan Gratuit'}
+            </p>
+            {sub?.currentPeriodEnd && (
+              <p className="text-sm mt-1" style={{ color: 'hsl(248 10% 46%)' }}>
+                {sub.cancelAtPeriodEnd ? 'Se termine le ' : 'Renouvellement le '}
+                {new Date(sub.currentPeriodEnd).toLocaleDateString('fr-FR')}
+              </p>
+            )}
+            {!sub && (
+              <p className="text-sm mt-1" style={{ color: 'hsl(248 10% 46%)' }}>
+                Passe à Premium pour débloquer tout
+              </p>
+            )}
+          </div>
+          <span className="text-sm font-medium" style={{ color: 'hsl(38 52% 65%)' }}>
+            Gérer →
+          </span>
+        </div>
+      </Link>
 
       {/* ── Badges ── */}
       {badges.length > 0 && (

@@ -84,6 +84,7 @@ export default async function BoutiquePage({ searchParams }: BoutiquePageProps) 
         <p className="text-base" style={{ color: 'hsl(248 10% 48%)' }}>
           Personnalise ton espace. Enrichis ton Codex. Exprime ton essence.
         </p>
+        <div className="divider-gold" />
       </div>
 
       {/* ── Bannière plan ── */}
@@ -172,18 +173,38 @@ function PlanBanner({ planKey }: { planKey: string }) {
   return (
     <Link href="/abonnement" className="block">
       <div
-        className="rounded-lg p-5 text-center space-y-2 card-hover"
+        className="rounded-xl p-5 text-center space-y-3 card-hover"
         style={{
-          background: 'linear-gradient(135deg, hsl(38 52% 58% / 0.08) 0%, hsl(38 52% 58% / 0.04) 100%)',
-          border: '1px solid hsl(38 52% 58% / 0.18)',
+          background: 'linear-gradient(135deg, hsl(38 52% 58% / 0.10) 0%, hsl(265 50% 15% / 0.40) 100%)',
+          border: '1px solid hsl(38 52% 58% / 0.22)',
+          position: 'relative',
+          overflow: 'hidden',
         }}
       >
-        <p className="text-sm font-medium" style={{ color: 'hsl(38 52% 65%)' }}>
-          ✨ Plan Premium
+        <div className="top-line-gold" />
+        <p
+          style={{
+            fontFamily: "'Cormorant Garamond', Georgia, serif",
+            fontSize: '20px',
+            fontWeight: 400,
+            color: 'hsl(38 65% 75%)',
+          }}
+        >
+          Passer Premium
         </p>
-        <p className="text-xs" style={{ color: 'hsl(248 10% 48%)' }}>
+        <p className="text-sm" style={{ color: 'hsl(248 10% 52%)' }}>
           Débloque tous les produits et contenus exclusifs
         </p>
+        <div
+          className="inline-block text-xs font-semibold px-4 py-2 rounded-full"
+          style={{
+            background: 'linear-gradient(135deg, hsl(38 52% 52%), hsl(38 62% 66%))',
+            color: 'hsl(246 40% 8%)',
+            letterSpacing: '0.05em',
+          }}
+        >
+          Voir les plans →
+        </div>
       </div>
     </Link>
   )
@@ -205,12 +226,16 @@ function ProductCard({ product, status }: ProductCardProps) {
   return (
     <Link href={`/boutique/${product.key}`} className="block group">
       <div
-        className="rounded-lg overflow-hidden card-hover"
+        className="rounded-xl overflow-hidden card-hover"
         style={{
-          background: 'hsl(var(--surface))',
-          border: '1px solid hsl(248 22% 14%)',
+          background: isOwned
+            ? 'hsl(248 30% 8%)'
+            : 'linear-gradient(145deg, hsl(250 35% 9%) 0%, hsl(260 38% 11%) 100%)',
+          border: `1px solid ${isOwned ? 'hsl(148 40% 35% / 0.25)' : isPurchasable ? 'hsl(38 52% 58% / 0.20)' : 'hsl(248 22% 14%)'}`,
+          position: 'relative',
         }}
       >
+        {isPurchasable && !isOwned && <div className="top-line-gold" />}
         {/* Visuel produit */}
         <div
           className="relative aspect-video bg-gradient-to-br from-surface-elevated to-surface overflow-hidden flex items-center justify-center"
