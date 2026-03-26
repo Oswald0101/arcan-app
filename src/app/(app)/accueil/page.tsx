@@ -1,5 +1,5 @@
 // src/app/(app)/accueil/page.tsx
-// Refonte : Dashboard premium, mobile-first, hiérarchie visuelle forte
+// Dashboard premium — XP ring SVG, carte Guide immersive, Cormorant
 
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
@@ -32,9 +32,14 @@ export default async function AccueilPage() {
     profile?.displayName ||
     (isAutoUsername(profile?.username) ? null : profile?.username) ||
     'Explorateur'
+
   const xpCurrent = profile?.currentXp ?? 0
   const xpRequired = memberProgress?.currentLevel?.requiredXp ?? 1000
   const xpPercent = Math.min(100, Math.round((xpCurrent / xpRequired) * 100))
+
+  // SVG ring — circonférence = 2π × 42 = 263.9
+  const CIRC = 263.9
+  const xpDash = Math.round((xpPercent / 100) * CIRC)
 
   const hour = new Date().getHours()
   const greeting =
@@ -44,169 +49,239 @@ export default async function AccueilPage() {
                 t(lang, 'greeting_evening')
 
   return (
-    <div className="mx-auto max-w-lg px-4 space-y-6 pb-4">
-      {/* Intro ARCAN — première connexion uniquement */}
+    <div className="mx-auto max-w-lg px-4 pb-8 space-y-7">
       <ArcanIntro userId={user.id} />
 
-      {/* ── HERO ────────────────────────────────── */}
-      <div className="pt-6 pb-2 animate-fade-up">
-        <p className="label-section mb-3" style={{ color: 'hsl(248 10% 45%)' }}>{greeting}</p>
-        <h1
-          style={{
-            fontFamily: "'Cormorant Garamond', Georgia, serif",
-            fontSize: 'clamp(48px, 12vw, 64px)',
-            fontWeight: 300,
-            lineHeight: 1.0,
-            letterSpacing: '-0.02em',
-            color: 'hsl(38 14% 92%)',
-            marginBottom: '20px',
-          }}
-        >
-          {memberName}
-        </h1>
+      {/* ── HERO : NOM + XP RING ────────────────── */}
+      <div className="pt-6 animate-fade-up">
 
-        {/* XP sous le nom — plus visible */}
-        {memberProgress?.currentLevel && (
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium" style={{ color: 'hsl(248 10% 50%)' }}>
-                {memberProgress.currentLevel.title}
-              </span>
-              <span className="text-sm font-medium" style={{ color: 'hsl(38 52% 65%)' }}>
-                {xpCurrent.toLocaleString()} / {xpRequired.toLocaleString()} XP
-              </span>
-            </div>
-            <div
-              className="h-2 w-full rounded-full overflow-hidden"
-              style={{ background: 'hsl(248 22% 14%)' }}
+        {/* Salutation */}
+        <p className="label-section mb-4" style={{ letterSpacing: '0.25em' }}>{greeting}</p>
+
+        {/* Nom + Ring côte à côte sur desktop, empilé sur mobile */}
+        <div className="flex items-start justify-between gap-4">
+
+          {/* Nom membre */}
+          <div className="flex-1 min-w-0">
+            <h1
+              style={{
+                fontFamily: "'Cormorant Garamond', Georgia, serif",
+                fontSize: 'clamp(44px, 11vw, 60px)',
+                fontWeight: 300,
+                lineHeight: 1.0,
+                letterSpacing: '-0.025em',
+                color: 'hsl(38 14% 93%)',
+              }}
             >
-              <div
-                className="h-full rounded-full"
-                style={{
-                  width: `${xpPercent}%`,
-                  background: 'linear-gradient(to right, hsl(38 40% 45%), hsl(38 58% 65%))',
-                  boxShadow: '0 0 12px hsl(38 52% 58% / 0.4)',
-                  transition: 'width 1s cubic-bezier(0.22,1,0.36,1)',
-                }}
-              />
-            </div>
+              {memberName}
+            </h1>
+            {memberProgress?.currentLevel && (
+              <p
+                className="mt-2 text-sm font-medium"
+                style={{ color: 'hsl(248 10% 48%)' }}
+              >
+                {memberProgress.currentLevel.title}
+              </p>
+            )}
           </div>
+
+          {/* XP Ring SVG */}
+          {memberProgress?.currentLevel && (
+            <div className="xp-ring-container flex-shrink-0" style={{ width: 88, height: 88 }}>
+              {/* Halo */}
+              <div className="xp-ring-glow" />
+              <svg width="88" height="88" viewBox="0 0 96 96" style={{ transform: 'rotate(-90deg)' }}>
+                {/* Piste fond */}
+                <circle
+                  cx="48" cy="48" r="42"
+                  fill="none"
+                  stroke="hsl(248 22% 14%)"
+                  strokeWidth="7"
+                />
+                {/* Arc XP */}
+                <circle
+                  cx="48" cy="48" r="42"
+                  fill="none"
+                  stroke="url(#xpGradient)"
+                  strokeWidth="7"
+                  strokeLinecap="round"
+                  strokeDasharray={`${xpDash} ${CIRC}`}
+                  style={{
+                    filter: 'drop-shadow(0 0 6px hsl(38 54% 62% / 0.6))',
+                    transition: 'stroke-dasharray 1.2s cubic-bezier(0.22, 1, 0.36, 1)',
+                  }}
+                />
+                <defs>
+                  <linearGradient id="xpGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%"   stopColor="hsl(38, 40%, 50%)" />
+                    <stop offset="100%" stopColor="hsl(38, 72%, 74%)" />
+                  </linearGradient>
+                </defs>
+              </svg>
+              {/* Texte centre */}
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 1,
+                }}
+              >
+                <span
+                  style={{
+                    fontFamily: "'Cormorant Garamond', Georgia, serif",
+                    fontSize: '22px',
+                    fontWeight: 400,
+                    lineHeight: 1,
+                    color: 'hsl(38 65% 78%)',
+                  }}
+                >
+                  {xpPercent}
+                </span>
+                <span style={{ fontSize: '9px', letterSpacing: '0.12em', color: 'hsl(248 10% 44%)' }}>
+                  %
+                </span>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* XP en chiffres sous le nom */}
+        {memberProgress?.currentLevel && (
+          <p className="mt-3 text-xs" style={{ color: 'hsl(248 10% 42%)' }}>
+            <span style={{ color: 'hsl(38 54% 62%)' }}>{xpCurrent.toLocaleString()}</span>
+            {' '}/ {xpRequired.toLocaleString()} XP
+          </p>
         )}
       </div>
 
-      {/* ── ALERTE CONTACT ──────────────────────── */}
+      {/* ── ALERTE CONTACTS ─────────────────────── */}
       {pendingContactRequests > 0 && (
         <Link href="/contacts" className="block animate-fade-up delay-50">
           <div
-            className="flex items-center justify-between rounded-lg px-4 py-3.5 text-sm font-medium transition-all hover:brightness-110 active:scale-95"
+            className="flex items-center justify-between px-5 py-3.5 rounded-2xl"
             style={{
-              background: 'hsl(38 52% 58% / 0.08)',
-              border: '1px solid hsl(38 52% 58% / 0.20)',
-              color: 'hsl(38 52% 65%)',
+              background: 'hsl(38 52% 58% / 0.07)',
+              border: '1px solid hsl(38 52% 58% / 0.22)',
             }}
           >
-            <span>
+            <span className="text-sm font-medium" style={{ color: 'hsl(38 60% 68%)' }}>
               {pendingContactRequests} demande{pendingContactRequests > 1 ? 's' : ''} de contact
             </span>
-            <span>→</span>
+            <span style={{ color: 'hsl(38 54% 62%)' }}>→</span>
           </div>
         </Link>
       )}
 
-      {/* ── STATS MONUMENTAUX ───────────────────── */}
-      <div className="grid grid-cols-2 gap-4 animate-fade-up delay-100">
+      {/* ── STATS : STREAK + NIVEAU ──────────────── */}
+      <div className="grid grid-cols-2 gap-3 animate-fade-up delay-100">
+
         {/* Streak */}
-        <div className="card p-6 space-y-2">
-          <div className="flex items-end gap-2">
+        <div
+          className="card-premium p-5 space-y-3"
+          style={{ position: 'relative', overflow: 'hidden' }}
+        >
+          {/* Halo feu */}
+          {streakDays >= 7 && (
+            <div style={{
+              position: 'absolute', top: '-40%', right: '-20%',
+              width: '70%', height: '180%',
+              background: 'radial-gradient(ellipse, hsl(30 80% 50% / 0.12) 0%, transparent 70%)',
+              pointerEvents: 'none',
+            }} />
+          )}
+          <div className="relative flex items-end gap-2">
             <span
               style={{
                 fontFamily: "'Cormorant Garamond', Georgia, serif",
-                fontSize: '48px',
+                fontSize: '52px',
                 fontWeight: 300,
                 lineHeight: 1,
-                color: streakDays >= 7 ? 'hsl(38 58% 68%)' : 'hsl(38 14% 88%)',
+                color: streakDays >= 7 ? 'hsl(38 65% 72%)' : 'hsl(38 10% 86%)',
                 fontVariantNumeric: 'tabular-nums',
               }}
             >
               {streakDays}
             </span>
-            {streakDays >= 7 && (
-              <span className="text-2xl pb-1">🔥</span>
-            )}
+            {streakDays >= 7 && <span style={{ fontSize: '22px', paddingBottom: 4 }}>🔥</span>}
           </div>
           <p className="label-section">{t(lang, 'streak_days')}</p>
         </div>
 
         {/* Niveau */}
-        <div className="card p-6 space-y-2">
-          <p
-            style={{
-              fontFamily: "'Cormorant Garamond', Georgia, serif",
-              fontSize: '32px',
-              fontWeight: 300,
-              lineHeight: 1,
-              color: 'hsl(38 14% 88%)',
-            }}
-          >
-            {memberProgress?.currentLevel?.title ?? `Niv. ${profile?.currentLevel ?? 1}`}
-          </p>
+        <div className="card-premium p-5 space-y-3">
+          <div style={{ position: 'relative' }}>
+            {/* Icône niveau */}
+            <div style={{
+              width: 36, height: 36,
+              borderRadius: '50%',
+              background: 'hsl(38 54% 62% / 0.10)',
+              border: '1px solid hsl(38 54% 62% / 0.20)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: 'hsl(38 60% 68%)',
+              fontSize: '16px',
+              marginBottom: 8,
+            }}>
+              ◆
+            </div>
+            <p
+              style={{
+                fontFamily: "'Cormorant Garamond', Georgia, serif",
+                fontSize: '26px',
+                fontWeight: 400,
+                lineHeight: 1.1,
+                color: 'hsl(38 12% 88%)',
+              }}
+            >
+              {memberProgress?.currentLevel?.title ?? `Niv. ${profile?.currentLevel ?? 1}`}
+            </p>
+          </div>
           <p className="label-section">{t(lang, 'profile_level')}</p>
         </div>
       </div>
 
-      {/* ── GUIDE — CARTE PORTAIL ───────────────── */}
+      {/* ── GUIDE — PORTAIL IMMERSIF ─────────────── */}
       {guide && (
         <Link href="/guide" className="block animate-fade-up delay-150">
           <div
-            className="relative overflow-hidden rounded-lg p-6 card-hover"
-            style={{
-              background: 'linear-gradient(135deg, hsl(250 35% 10%) 0%, hsl(260 40% 13%) 100%)',
-              border: '1px solid hsl(38 30% 20% / 0.25)',
-              boxShadow:
-                'inset 0 1px 0 hsl(38 100% 80% / 0.06), 0 8px 32px hsl(246 40% 2% / 0.65)',
-            }}
+            className="card-guide card-hover relative overflow-hidden"
+            style={{ padding: '24px' }}
           >
-            {/* Halo ambiant animé */}
-            <div
-              style={{
-                position: 'absolute',
-                top: '-40%',
-                right: '-15%',
-                width: '65%',
-                height: '200%',
-                background: 'radial-gradient(ellipse, hsl(38 52% 58% / 0.08) 0%, transparent 70%)',
-                pointerEvents: 'none',
-                animation: 'ambient 8s ease-in-out infinite',
-              }}
-            />
-            <div
-              style={{
-                position: 'absolute',
-                bottom: '-30%',
-                left: '5%',
-                width: '40%',
-                height: '120%',
-                background: 'radial-gradient(ellipse, hsl(265 55% 40% / 0.06) 0%, transparent 70%)',
-                pointerEvents: 'none',
-                animation: 'ambient 11s ease-in-out infinite reverse',
-              }}
-            />
+            {/* Halos animés */}
+            <div className="animate-ambient" style={{
+              position: 'absolute', top: '-50%', right: '-20%',
+              width: '70%', height: '220%',
+              background: 'radial-gradient(ellipse, hsl(38 54% 62% / 0.10) 0%, transparent 65%)',
+              pointerEvents: 'none',
+            }} />
+            <div style={{
+              position: 'absolute', bottom: '-40%', left: '0%',
+              width: '50%', height: '150%',
+              background: 'radial-gradient(ellipse, hsl(265 60% 45% / 0.09) 0%, transparent 65%)',
+              pointerEvents: 'none',
+              animation: 'ambient 13s ease-in-out infinite reverse',
+            }} />
+
+            {/* Ligne dorée en haut */}
+            <div className="top-line-gold" />
 
             {/* Contenu */}
             <div className="relative flex items-center gap-4">
-              {/* Symbole guide */}
-              <div
-                className="flex-shrink-0 flex items-center justify-center rounded-full select-none"
-                style={{
-                  width: '56px',
-                  height: '56px',
-                  background: 'hsl(38 52% 58% / 0.12)',
-                  border: '1px solid hsl(38 52% 58% / 0.25)',
-                  color: 'hsl(38 58% 68%)',
-                  fontSize: '24px',
-                  boxShadow: '0 0 20px hsl(38 52% 58% / 0.15)',
-                }}
-              >
+
+              {/* Orbe Guide */}
+              <div style={{
+                width: 60, height: 60, flexShrink: 0,
+                borderRadius: '50%',
+                background: 'radial-gradient(circle at 35% 35%, hsl(38 54% 62% / 0.22), hsl(265 55% 30% / 0.12))',
+                border: '1px solid hsl(38 54% 62% / 0.28)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: '26px',
+                color: 'hsl(38 65% 72%)',
+                boxShadow: '0 0 24px hsl(38 54% 62% / 0.18), inset 0 1px 0 hsl(38 100% 80% / 0.12)',
+              }}>
                 ◎
               </div>
 
@@ -214,7 +289,7 @@ export default async function AccueilPage() {
                 <p
                   style={{
                     fontFamily: "'Cormorant Garamond', Georgia, serif",
-                    fontSize: '20px',
+                    fontSize: '22px',
                     fontWeight: 400,
                     color: 'hsl(38 14% 92%)',
                     lineHeight: 1.2,
@@ -222,37 +297,30 @@ export default async function AccueilPage() {
                 >
                   {guide.name}
                 </p>
-                <p
-                  className="text-sm capitalize mt-1"
-                  style={{ color: 'hsl(248 10% 48%)' }}
-                >
+                <p className="text-sm capitalize mt-1" style={{ color: 'hsl(248 10% 48%)' }}>
                   {guide.customTypeLabel ?? guide.canonicalType}
                 </p>
               </div>
 
-              {/* Indicateur en ligne */}
-              <div className="flex-shrink-0 flex items-center gap-1.5">
+              <div className="flex items-center gap-1.5 flex-shrink-0">
                 <span className="status-dot-online" />
-                <span
-                  className="text-xs hidden sm:inline"
-                  style={{ color: 'hsl(148 45% 52%)' }}
-                >
-                  {t(lang, 'guide_online')}
-                </span>
               </div>
             </div>
 
-            {/* Tagline sous la carte */}
+            {/* Footer carte */}
             <div
-              className="relative mt-5 pt-4"
-              style={{ borderTop: '1px solid hsl(38 20% 18% / 0.3)' }}
+              className="relative mt-5 pt-4 flex items-center justify-between"
+              style={{ borderTop: '1px solid hsl(38 25% 16% / 0.4)' }}
             >
-              <p
-                className="text-sm font-medium"
-                style={{ color: 'hsl(38 52% 65%)' }}
-              >
-                Commence une conversation →
+              <p className="text-sm" style={{ color: 'hsl(248 10% 46%)' }}>
+                Reprendre la conversation
               </p>
+              <span
+                className="text-sm font-medium"
+                style={{ color: 'hsl(38 60% 68%)' }}
+              >
+                →
+              </span>
             </div>
           </div>
         </Link>
@@ -281,7 +349,7 @@ export default async function AccueilPage() {
           <SectionHeader title="Épreuves en cours" href="/progression" linkLabel={t(lang, 'see_all')} />
           <div className="space-y-2.5">
             {activeChallenges.map((log: any) => (
-              <div key={log.id} className="card px-4 py-3.5 flex items-center justify-between">
+              <div key={log.id} className="card px-4 py-4 flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium" style={{ color: 'hsl(38 14% 86%)' }}>
                     {log.challenge.title}
@@ -292,11 +360,11 @@ export default async function AccueilPage() {
                 </div>
                 <Link
                   href="/progression"
-                  className="text-xs px-3 py-1.5 rounded-lg font-medium transition-all hover:bg-surface-elevated active:scale-95"
+                  className="text-xs px-3 py-2 rounded-xl font-medium"
                   style={{
                     background: 'hsl(248 28% 11%)',
                     border: '1px solid hsl(248 20% 18%)',
-                    color: 'hsl(38 52% 65%)',
+                    color: 'hsl(38 54% 65%)',
                   }}
                 >
                   Gérer
@@ -312,13 +380,14 @@ export default async function AccueilPage() {
         <section className="space-y-4 animate-fade-up delay-300">
           <SectionHeader title={t(lang, 'my_path')} href={`/cercles/${activePath.slug}`} linkLabel={t(lang, 'see_all')} />
           <Link href={`/cercles/${activePath.slug}`} className="block card-hover">
-            <div className="rounded-lg p-6 card">
+            <div className="card-elevated rounded-2xl px-5 py-5">
               <p
                 style={{
                   fontFamily: "'Cormorant Garamond', Georgia, serif",
-                  fontSize: '20px',
+                  fontSize: '22px',
                   fontWeight: 400,
-                  color: 'hsl(38 14% 90%)',
+                  color: 'hsl(38 12% 90%)',
+                  lineHeight: 1.2,
                 }}
               >
                 {activePath.name}
@@ -342,16 +411,13 @@ export default async function AccueilPage() {
           <SectionHeader title={t(lang, 'recent_badges')} href="/progression" linkLabel={t(lang, 'see_all')} />
           <div className="flex gap-3">
             {recentBadges.map((ub: any) => (
-              <div
-                key={ub.id}
-                className="card p-4 text-center space-y-2 flex-1"
-              >
+              <div key={ub.id} className="card p-4 text-center space-y-2 flex-1">
                 {ub.badge.imageUrl ? (
                   <img src={ub.badge.imageUrl} alt="" className="h-9 w-9 mx-auto" />
                 ) : (
                   <div
                     className="h-9 w-9 mx-auto rounded-full flex items-center justify-center"
-                    style={{ background: 'hsl(38 52% 58% / 0.10)', color: 'hsl(38 58% 65%)', fontSize: '16px' }}
+                    style={{ background: 'hsl(38 52% 58% / 0.10)', color: 'hsl(38 60% 68%)', fontSize: '16px' }}
                   >
                     ◆
                   </div>
@@ -367,21 +433,39 @@ export default async function AccueilPage() {
 
       {/* ── PREMIUM CTA ─────────────────────────── */}
       {planKey === 'free' && (
-        <section className="space-y-4 animate-fade-up delay-400">
+        <section className="animate-fade-up delay-400">
           <Link href="/abonnement" className="block">
             <div
-              className="rounded-lg p-6 text-center space-y-3 card-hover"
+              className="card-hover rounded-2xl px-6 py-5 text-center space-y-2"
               style={{
-                background: 'linear-gradient(135deg, hsl(38 52% 58% / 0.08) 0%, hsl(38 52% 58% / 0.04) 100%)',
-                border: '1px solid hsl(38 52% 58% / 0.15)',
+                background: 'linear-gradient(135deg, hsl(38 54% 62% / 0.07) 0%, hsl(38 54% 62% / 0.03) 100%)',
+                border: '1px solid hsl(38 54% 62% / 0.16)',
               }}
             >
-              <p className="text-sm font-medium" style={{ color: 'hsl(38 52% 65%)' }}>
-                Passe Premium
+              <p
+                style={{
+                  fontFamily: "'Cormorant Garamond', Georgia, serif",
+                  fontSize: '18px',
+                  fontWeight: 400,
+                  color: 'hsl(38 60% 68%)',
+                }}
+              >
+                Accède à l'expérience complète
               </p>
-              <p className="text-xs" style={{ color: 'hsl(248 10% 45%)' }}>
-                Débloque plus de contenu et de personnalisation
+              <p className="text-sm" style={{ color: 'hsl(248 10% 45%)' }}>
+                Débloque le Guide avancé, toutes les Voies et plus
               </p>
+              <div
+                className="inline-block mt-1 px-4 py-1.5 rounded-full text-xs font-semibold"
+                style={{
+                  background: 'hsl(38 54% 62% / 0.12)',
+                  border: '1px solid hsl(38 54% 62% / 0.25)',
+                  color: 'hsl(38 65% 72%)',
+                  letterSpacing: '0.08em',
+                }}
+              >
+                PASSER PREMIUM
+              </div>
             </div>
           </Link>
         </section>
@@ -390,7 +474,7 @@ export default async function AccueilPage() {
   )
 }
 
-// ── Section Header ────────────────────────────────────────
+// ── Section Header ───────────────────────────────────────
 
 function SectionHeader({ title, href, linkLabel }: { title: string; href: string; linkLabel: string }) {
   return (
@@ -398,8 +482,8 @@ function SectionHeader({ title, href, linkLabel }: { title: string; href: string
       <h2 className="label-section">{title}</h2>
       <Link
         href={href}
-        className="text-xs font-medium transition-opacity hover:opacity-70"
-        style={{ color: 'hsl(38 52% 65%)' }}
+        className="text-xs font-medium"
+        style={{ color: 'hsl(38 54% 62%)', opacity: 0.85 }}
       >
         {linkLabel} →
       </Link>
