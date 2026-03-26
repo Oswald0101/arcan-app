@@ -69,18 +69,23 @@ export function BottomNav() {
     <nav
       className="fixed bottom-0 left-0 right-0 z-50"
       style={{
-        background: 'hsl(248 32% 6% / 0.92)',
-        backdropFilter: 'blur(28px) saturate(180%)',
-        WebkitBackdropFilter: 'blur(28px) saturate(180%)',
-        borderTop: '1px solid hsl(248 22% 16% / 0.55)',
-        boxShadow: '0 -1px 0 hsl(248 100% 100% / 0.03), 0 -16px 48px hsl(246 40% 2% / 0.30)',
+        background: 'hsl(248 36% 5% / 0.90)',
+        backdropFilter: 'blur(32px) saturate(200%)',
+        WebkitBackdropFilter: 'blur(32px) saturate(200%)',
+        boxShadow: '0 -16px 48px hsl(246 42% 2% / 0.35)',
       }}
     >
+      {/* Ligne dorée en haut du nav */}
+      <div style={{
+        height: '1px',
+        background: 'linear-gradient(to right, transparent, hsl(38 54% 62% / 0.30) 30%, hsl(38 68% 75% / 0.55) 50%, hsl(38 54% 62% / 0.30) 70%, transparent)',
+      }} />
+
       <div
         className="mx-auto flex max-w-lg items-center justify-around"
         style={{
-          paddingBottom: 'max(env(safe-area-inset-bottom, 0px), 8px)',
-          paddingTop: '8px',
+          paddingBottom: 'max(env(safe-area-inset-bottom, 0px), 10px)',
+          paddingTop: '6px',
           paddingLeft: '4px',
           paddingRight: '4px',
         }}
@@ -92,38 +97,71 @@ export function BottomNav() {
             <Link
               key={item.href}
               href={item.href}
-              className="relative flex flex-col items-center gap-1 rounded-2xl transition-all duration-200 active:scale-95"
+              className="relative flex flex-col items-center gap-1 transition-all duration-200 active:scale-90"
               style={{
-                color: isActive ? 'hsl(38 58% 64%)' : 'hsl(248 10% 40%)',
-                background: isActive ? 'hsl(38 52% 58% / 0.10)' : 'transparent',
-                padding: '10px 8px 8px',
+                padding: '8px 6px 6px',
                 minWidth: '56px',
-                minHeight: '56px',
+                minHeight: '54px',
                 flex: 1,
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
+                color: isActive ? 'hsl(38 62% 68%)' : 'hsl(248 10% 38%)',
               }}
             >
-              {item.icon(isActive)}
-              <span
-                style={{
-                  fontSize: '10px',
-                  fontWeight: isActive ? 600 : 500,
-                  letterSpacing: isActive ? '0.03em' : '0.01em',
-                  color: isActive ? 'hsl(38 58% 64%)' : 'hsl(248 10% 38%)',
-                  transition: 'all 0.2s ease',
-                  lineHeight: 1.2,
-                  textAlign: 'center',
-                  maxWidth: '50px',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                }}
-              >
+              {/* Glow derrière l'icône active */}
+              {isActive && (
+                <div style={{
+                  position: 'absolute',
+                  top: '4px',
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '50%',
+                  background: 'radial-gradient(circle, hsl(38 54% 62% / 0.18) 0%, transparent 70%)',
+                  pointerEvents: 'none',
+                }} />
+              )}
+
+              {/* Icône */}
+              <div style={{
+                position: 'relative',
+                filter: isActive ? 'drop-shadow(0 0 6px hsl(38 54% 62% / 0.50))' : 'none',
+                transition: 'filter 0.2s ease',
+              }}>
+                {item.icon(isActive)}
+              </div>
+
+              {/* Label */}
+              <span style={{
+                fontSize: '10px',
+                fontWeight: isActive ? 600 : 400,
+                letterSpacing: isActive ? '0.04em' : '0.01em',
+                color: isActive ? 'hsl(38 62% 68%)' : 'hsl(248 10% 36%)',
+                transition: 'all 0.2s ease',
+                lineHeight: 1.2,
+                textAlign: 'center',
+                maxWidth: '52px',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                marginTop: 2,
+              }}>
                 {item.label}
               </span>
+
+              {/* Point indicateur doré sous l'icône active */}
+              {isActive && (
+                <div style={{
+                  position: 'absolute',
+                  bottom: 2,
+                  width: 4,
+                  height: 4,
+                  borderRadius: '50%',
+                  background: 'hsl(38 62% 68%)',
+                  boxShadow: '0 0 6px hsl(38 54% 62% / 0.70)',
+                }} />
+              )}
             </Link>
           )
         })}

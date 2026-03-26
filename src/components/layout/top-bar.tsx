@@ -18,18 +18,23 @@ export function TopBar({ username, displayName, avatarUrl, level, isAdmin }: Top
     <header
       className="fixed top-0 left-0 right-0 z-40"
       style={{
-        background: 'hsl(248 32% 5% / 0.88)',
-        backdropFilter: 'blur(28px) saturate(180%)',
-        WebkitBackdropFilter: 'blur(28px) saturate(180%)',
-        borderBottom: '1px solid hsl(248 22% 13% / 0.60)',
-        boxShadow: '0 1px 0 hsl(248 100% 100% / 0.025), 0 4px 24px hsl(246 40% 2% / 0.20)',
+        background: 'hsl(248 32% 5% / 0.90)',
+        backdropFilter: 'blur(32px) saturate(200%)',
+        WebkitBackdropFilter: 'blur(32px) saturate(200%)',
+        boxShadow: '0 8px 32px hsl(246 40% 2% / 0.30)',
         paddingTop: 'max(env(safe-area-inset-top, 0px), 0px)',
       }}
     >
+      {/* Ligne dorée en bas du header */}
+      <div style={{
+        height: '1px',
+        background: 'linear-gradient(to right, transparent, hsl(38 54% 62% / 0.25) 25%, hsl(38 68% 75% / 0.50) 50%, hsl(38 54% 62% / 0.25) 75%, transparent)',
+      }} />
+
       <div
         className="mx-auto flex max-w-lg items-center justify-between px-4"
         style={{
-          height: '56px',
+          height: '54px',
         }}
       >
 
@@ -38,10 +43,13 @@ export function TopBar({ username, displayName, avatarUrl, level, isAdmin }: Top
           <span
             style={{
               fontFamily: "'Cormorant Garamond', Georgia, serif",
-              fontSize: '20px',
-              fontWeight: 400,
-              letterSpacing: '0.15em',
-              color: 'hsl(38 55% 62%)',
+              fontSize: '22px',
+              fontWeight: 500,
+              letterSpacing: '0.22em',
+              background: 'linear-gradient(135deg, hsl(38 52% 58%), hsl(38 72% 76%), hsl(38 52% 62%))',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
             }}
           >
             ARCAN
