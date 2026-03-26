@@ -1,4 +1,6 @@
 // src/app/(app)/boutique/page.tsx
+// Refonte : Boutique premium, désirabilité visuelle, mobile-first
+
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
@@ -52,18 +54,17 @@ export default async function BoutiquePage({ searchParams }: BoutiquePageProps) 
   const products = BOUTIQUE_CATALOGUE.filter(p => p.category === activeCategory)
 
   return (
-    <div className="mx-auto max-w-lg px-4 py-6">
+    <div className="mx-auto max-w-lg px-4 py-6 space-y-6 pb-4 animate-fade-up">
 
-      {/* ── En-tête ── */}
-      <div className="mb-6">
+      {/* ── En-tête — plus immersif ── */}
+      <div className="space-y-3">
         <p
           style={{
-            fontSize: '9px',
+            fontSize: '11px',
             fontWeight: 600,
             letterSpacing: '0.22em',
-            color: 'hsl(38 52% 58% / 0.65)',
+            color: 'hsl(38 52% 58% / 0.70)',
             textTransform: 'uppercase',
-            marginBottom: '6px',
           }}
         >
           Boutique
@@ -71,25 +72,25 @@ export default async function BoutiquePage({ searchParams }: BoutiquePageProps) 
         <h1
           style={{
             fontFamily: "'Cormorant Garamond', Georgia, serif",
-            fontSize: '28px',
+            fontSize: 'clamp(28px, 7vw, 40px)',
             fontWeight: 300,
-            letterSpacing: '-0.01em',
+            letterSpacing: '-0.02em',
             color: 'hsl(38 14% 90%)',
             lineHeight: 1.1,
           }}
         >
           Révèle ce qui est en toi.
         </h1>
-        <p className="text-sm mt-1.5" style={{ color: 'hsl(248 10% 44%)' }}>
-          Personnalise ton espace. Enrichis ton Codex.
+        <p className="text-base" style={{ color: 'hsl(248 10% 48%)' }}>
+          Personnalise ton espace. Enrichis ton Codex. Exprime ton essence.
         </p>
       </div>
 
       {/* ── Bannière plan ── */}
       <PlanBanner planKey={planKey} />
 
-      {/* ── Tabs catégories ── */}
-      <div className="flex gap-2 mb-6 overflow-x-auto pb-1">
+      {/* ── Tabs catégories — plus visibles ── */}
+      <div className="flex gap-2 overflow-x-auto pb-2" style={{ scrollBehavior: 'smooth', WebkitOverflowScrolling: 'touch' }}>
         {CATEGORIES.map((cat) => {
           const meta = CATEGORY_META[cat]
           const isActive = cat === activeCategory
@@ -97,23 +98,25 @@ export default async function BoutiquePage({ searchParams }: BoutiquePageProps) 
             <Link
               key={cat}
               href={`/boutique?cat=${cat}`}
-              className="flex-shrink-0 flex items-center gap-1.5 rounded-xl px-3 py-2 transition-all duration-200"
+              className="flex-shrink-0 flex items-center gap-2 rounded-lg px-4 py-2.5 font-medium transition-all duration-200 active:scale-95"
               style={{
-                background: isActive ? 'hsl(38 52% 58% / 0.1)' : 'hsl(248 30% 7%)',
-                border: `1px solid ${isActive ? 'hsl(38 52% 58% / 0.25)' : 'hsl(248 22% 13%)'}`,
-                color: isActive ? 'hsl(38 58% 68%)' : 'hsl(248 10% 44%)',
-                fontWeight: isActive ? 600 : 400,
+                background: isActive ? 'hsl(38 52% 58% / 0.12)' : 'hsl(248 30% 7%)',
+                border: `1px solid ${isActive ? 'hsl(38 52% 58% / 0.30)' : 'hsl(248 22% 14%)'}`,
+                color: isActive ? 'hsl(38 58% 68%)' : 'hsl(248 10% 48%)',
+                fontSize: '14px',
+                minHeight: '40px',
               }}
             >
-              <span style={{ fontSize: '13px' }}>{meta.symbol}</span>
-              <span style={{ fontSize: '12px' }}>{meta.label}</span>
+              <span style={{ fontSize: '16px' }}>{meta.symbol}</span>
+              <span>{meta.label}</span>
               <span
                 style={{
-                  fontSize: '9px',
-                  padding: '1px 5px',
+                  fontSize: '11px',
+                  padding: '2px 8px',
                   borderRadius: '999px',
                   background: 'hsl(248 30% 10%)',
-                  color: 'hsl(248 10% 38%)',
+                  color: 'hsl(248 10% 42%)',
+                  fontWeight: 600,
                 }}
               >
                 {meta.count}
@@ -123,32 +126,37 @@ export default async function BoutiquePage({ searchParams }: BoutiquePageProps) 
         })}
       </div>
 
-      {/* ── Grille produits ── */}
-      <div className="space-y-3">
-        {products.map((product) => {
+      {/* ── Grille produits — meilleure présentation ── */}
+      <div className="space-y-4">
+        {products.map((product, idx) => {
           const status = getProductStatus(product, entitlementKeys, planKey)
           return (
-            <ProductCard
+            <div
               key={product.key}
-              product={product}
-              status={status}
-            />
+              className="animate-fade-up"
+              style={{ animationDelay: `${idx * 50}ms` }}
+            >
+              <ProductCard
+                product={product}
+                status={status}
+              />
+            </div>
           )
         })}
       </div>
 
       {/* ── Footer ── */}
-      <div className="mt-8 text-center space-y-2">
-        <p className="text-xs" style={{ color: 'hsl(248 10% 28%)' }}>
+      <div className="mt-8 text-center space-y-3">
+        <p className="text-sm" style={{ color: 'hsl(248 10% 40%)' }}>
           Les achats sont définitifs et non remboursables.
         </p>
         {planKey === 'free' && (
           <Link
             href="/abonnement"
-            className="inline-block text-xs font-medium transition-opacity hover:opacity-70"
-            style={{ color: 'hsl(38 52% 60%)' }}
+            className="inline-block text-sm font-medium transition-opacity hover:opacity-70"
+            style={{ color: 'hsl(38 52% 65%)' }}
           >
-            Passer Premium pour débloquer plus →
+            Passe Premium pour débloquer plus →
           </Link>
         )}
       </div>
@@ -156,356 +164,126 @@ export default async function BoutiquePage({ searchParams }: BoutiquePageProps) 
   )
 }
 
-// ── Bannière plan ─────────────────────────────────────────────────────────────
+// ── Composant : Bannière plan ──
 
 function PlanBanner({ planKey }: { planKey: string }) {
-  const isFounder = planKey === 'founder'
-  const isPremium = planKey === 'premium'
+  if (planKey !== 'free') return null
 
   return (
-    <div
-      className="rounded-2xl px-4 py-3 mb-6 flex items-center justify-between gap-3"
-      style={{
-        background: isFounder
-          ? 'hsl(38 52% 58% / 0.06)'
-          : isPremium
-            ? 'hsl(275 52% 48% / 0.06)'
-            : 'hsl(248 30% 6%)',
-        border: `1px solid ${isFounder
-          ? 'hsl(38 52% 58% / 0.18)'
-          : isPremium
-            ? 'hsl(275 52% 48% / 0.18)'
-            : 'hsl(248 22% 12%)'}`,
-      }}
-    >
-      <div>
-        <p className="text-xs font-medium" style={{ color: 'hsl(38 14% 84%)' }}>
-          {isFounder
-            ? 'Fondateur — Tout est inclus dans ton plan'
-            : isPremium
-              ? 'Premium — Certains produits sont déjà inclus'
-              : 'Plan Gratuit — Acquiers des éléments à l\'unité'}
-        </p>
-        <p className="text-xs mt-0.5" style={{ color: 'hsl(248 10% 40%)' }}>
-          {isFounder
-            ? 'Tu as accès à la totalité de la boutique.'
-            : isPremium
-              ? 'Les éléments marqués "Inclus" sont déjà débloqués.'
-              : 'Passe Premium pour débloquer plusieurs avantages inclus.'}
-        </p>
-      </div>
-      <span
-        className="flex-shrink-0"
+    <Link href="/abonnement" className="block">
+      <div
+        className="rounded-lg p-5 text-center space-y-2 card-hover"
         style={{
-          fontSize: '9px',
-          fontWeight: 700,
-          letterSpacing: '0.1em',
-          padding: '4px 10px',
-          borderRadius: '999px',
-          background: isFounder
-            ? 'hsl(38 52% 58% / 0.12)'
-            : isPremium
-              ? 'hsl(275 52% 48% / 0.12)'
-              : 'hsl(248 30% 10%)',
-          color: isFounder
-            ? 'hsl(38 58% 68%)'
-            : isPremium
-              ? 'hsl(275 58% 72%)'
-              : 'hsl(248 10% 46%)',
-          border: `1px solid ${isFounder
-            ? 'hsl(38 52% 58% / 0.22)'
-            : isPremium
-              ? 'hsl(275 52% 48% / 0.22)'
-              : 'hsl(248 22% 18%)'}`,
-          textTransform: 'uppercase',
+          background: 'linear-gradient(135deg, hsl(38 52% 58% / 0.08) 0%, hsl(38 52% 58% / 0.04) 100%)',
+          border: '1px solid hsl(38 52% 58% / 0.18)',
         }}
       >
-        {isFounder ? 'Fondateur' : isPremium ? 'Premium' : 'Gratuit'}
-      </span>
-    </div>
+        <p className="text-sm font-medium" style={{ color: 'hsl(38 52% 65%)' }}>
+          ✨ Plan Premium
+        </p>
+        <p className="text-xs" style={{ color: 'hsl(248 10% 48%)' }}>
+          Débloque tous les produits et contenus exclusifs
+        </p>
+      </div>
+    </Link>
   )
 }
 
-// ── Carte produit avec visuel ─────────────────────────────────────────────────
+// ── Composant : Carte produit ──
 
-function ProductCard({
-  product,
-  status,
-}: {
+interface ProductCardProps {
   product: BoutiqueProduct
-  status: 'included' | 'owned' | 'available' | 'founder_only'
-}) {
-  const isAccessible = status === 'included' || status === 'owned'
-  const isPack = product.category === 'packs'
+  status: ReturnType<typeof getProductStatus>
+}
+
+function ProductCard({ product, status }: ProductCardProps) {
+  const isOwned = status.owned
+  const isLocked = status.locked
+  const isPurchasable = status.purchasable
+  const price = formatPrice(product.priceCents)
 
   return (
-    <div
-      className="rounded-2xl overflow-hidden transition-all duration-200"
-      style={{
-        background: isPack && isAccessible
-          ? 'hsl(38 52% 58% / 0.05)'
-          : isPack
-            ? 'hsl(248 30% 6%)'
-            : isAccessible
-              ? 'hsl(38 52% 58% / 0.03)'
-              : 'hsl(248 30% 4%)',
-        border: `1px solid ${isPack
-          ? isAccessible ? 'hsl(38 52% 58% / 0.20)' : 'hsl(38 52% 58% / 0.10)'
-          : isAccessible ? 'hsl(38 52% 58% / 0.12)' : 'hsl(248 22% 10%)'}`,
-        boxShadow: isPack
-          ? `0 0 ${isAccessible ? '30px' : '20px'} hsl(38 52% 58% / ${isAccessible ? '0.06' : '0.03'})`
-          : 'none',
-      }}
-    >
-      {/* Bande Pack */}
-      {isPack && (
+    <Link href={`/boutique/${product.key}`} className="block group">
+      <div
+        className="rounded-lg overflow-hidden card-hover"
+        style={{
+          background: 'hsl(var(--surface))',
+          border: '1px solid hsl(248 22% 14%)',
+        }}
+      >
+        {/* Visuel produit */}
         <div
+          className="relative aspect-video bg-gradient-to-br from-surface-elevated to-surface overflow-hidden flex items-center justify-center"
           style={{
-            padding: '6px 16px',
-            background: 'hsl(38 52% 58% / 0.07)',
-            borderBottom: '1px solid hsl(38 52% 58% / 0.10)',
+            background: 'linear-gradient(135deg, hsl(250 35% 10%) 0%, hsl(260 40% 13%) 100%)',
           }}
         >
-          <div className="flex items-center justify-between">
-            <span
+          <ProductVisual product={product} />
+
+          {/* Badge statut */}
+          {isOwned && (
+            <div
+              className="absolute top-3 right-3 px-3 py-1.5 rounded-lg text-xs font-semibold"
               style={{
-                fontSize: '9px',
-                fontWeight: 700,
-                letterSpacing: '0.14em',
-                color: 'hsl(38 58% 60%)',
-                textTransform: 'uppercase',
+                background: 'hsl(148 50% 40% / 0.20)',
+                border: '1px solid hsl(148 50% 40% / 0.40)',
+                color: 'hsl(148 52% 58%)',
               }}
             >
-              ◆ Pack
-            </span>
-            {product.originalAmount && (
+              ✓ Possédé
+            </div>
+          )}
+          {isLocked && (
+            <div
+              className="absolute top-3 right-3 px-3 py-1.5 rounded-lg text-xs font-semibold"
+              style={{
+                background: 'hsl(248 30% 20% / 0.40)',
+                border: '1px solid hsl(248 20% 30% / 0.40)',
+                color: 'hsl(248 10% 60%)',
+              }}
+            >
+              🔒 Verrouillé
+            </div>
+          )}
+        </div>
+
+        {/* Contenu */}
+        <div className="p-5 space-y-3">
+          <div>
+            <h3
+              className="font-serif text-lg font-medium"
+              style={{ color: 'hsl(38 22% 90%)' }}
+            >
+              {product.name}
+            </h3>
+            <p className="text-sm mt-1" style={{ color: 'hsl(248 10% 48%)' }}>
+              {product.description}
+            </p>
+          </div>
+
+          {/* Pied de carte */}
+          <div className="flex items-center justify-between pt-2">
+            <div className="flex items-center gap-2">
+              {product.tags?.map((tag) => (
+                <span
+                  key={tag}
+                  className="badge badge-muted text-xs"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+            {!isOwned && isPurchasable && (
               <span
-                style={{
-                  fontSize: '10px',
-                  fontWeight: 600,
-                  padding: '2px 7px',
-                  borderRadius: '999px',
-                  background: 'hsl(142 52% 42% / 0.10)',
-                  color: 'hsl(142 52% 55%)',
-                  border: '1px solid hsl(142 52% 42% / 0.20)',
-                }}
+                className="text-base font-semibold"
+                style={{ color: 'hsl(38 52% 65%)' }}
               >
-                −{Math.round((1 - product.priceAmount / product.originalAmount) * 100)}%
+                {price}
               </span>
             )}
           </div>
         </div>
-      )}
-
-      <div className="p-4 flex items-start gap-3 sm:gap-4">
-
-        {/* Visuel produit */}
-        <ProductVisual
-          productKey={product.key}
-          category={product.category}
-          symbol={product.symbol}
-          isAccessible={isAccessible}
-          size="sm"
-        />
-
-        {/* Contenu */}
-        <div className="flex-1 min-w-0">
-          <div className="flex items-start justify-between gap-2 mb-1">
-            <div>
-              <div className="flex items-center gap-2 flex-wrap">
-                <h3
-                  style={{
-                    fontSize: '14px',
-                    fontWeight: 600,
-                    color: isAccessible ? 'hsl(38 14% 90%)' : 'hsl(248 10% 68%)',
-                    letterSpacing: '-0.01em',
-                  }}
-                >
-                  {product.title}
-                </h3>
-                {product.isNew && (
-                  <span
-                    style={{
-                      fontSize: '8px',
-                      fontWeight: 700,
-                      letterSpacing: '0.1em',
-                      padding: '2px 5px',
-                      borderRadius: '999px',
-                      background: 'hsl(142 52% 42% / 0.10)',
-                      color: 'hsl(142 52% 55%)',
-                      border: '1px solid hsl(142 52% 42% / 0.20)',
-                      textTransform: 'uppercase',
-                    }}
-                  >
-                    Nouveau
-                  </span>
-                )}
-              </div>
-              <p className="text-xs" style={{ color: 'hsl(248 10% 40%)' }}>
-                {product.subtitle}
-              </p>
-            </div>
-            <StatusBadge status={status} />
-          </div>
-
-          <p
-            className="text-xs leading-relaxed"
-            style={{ color: 'hsl(248 10% 46%)', marginBottom: '8px' }}
-          >
-            {product.description}
-          </p>
-
-          {/* Previews spécifiques par type */}
-          {product.type === 'avatar' && (
-            <AvatarPackPreview productKey={product.key} isAccessible={isAccessible} />
-          )}
-          {product.type === 'theme' && (
-            <ThemePreview productKey={product.key} isAccessible={isAccessible} />
-          )}
-          {product.type === 'pack' && (
-            <PackContentsPreview productKey={product.key} isAccessible={isAccessible} />
-          )}
-
-          <div style={{ marginTop: '10px' }}>
-            <PriceDisplay product={product} status={status} />
-          </div>
-        </div>
       </div>
-    </div>
-  )
-}
-
-function StatusBadge({ status }: { status: 'included' | 'owned' | 'available' | 'founder_only' }) {
-  if (status === 'included') {
-    return (
-      <span
-        className="flex-shrink-0"
-        style={{
-          fontSize: '9px',
-          fontWeight: 700,
-          letterSpacing: '0.06em',
-          padding: '3px 7px',
-          borderRadius: '999px',
-          background: 'hsl(38 52% 58% / 0.09)',
-          color: 'hsl(38 58% 64%)',
-          border: '1px solid hsl(38 52% 58% / 0.18)',
-          textTransform: 'uppercase',
-          whiteSpace: 'nowrap',
-        }}
-      >
-        ✓ Inclus
-      </span>
-    )
-  }
-  if (status === 'owned') {
-    return (
-      <span
-        className="flex-shrink-0"
-        style={{
-          fontSize: '9px',
-          fontWeight: 700,
-          letterSpacing: '0.06em',
-          padding: '3px 7px',
-          borderRadius: '999px',
-          background: 'hsl(142 52% 42% / 0.09)',
-          color: 'hsl(142 52% 55%)',
-          border: '1px solid hsl(142 52% 42% / 0.18)',
-          textTransform: 'uppercase',
-          whiteSpace: 'nowrap',
-        }}
-      >
-        ✓ Obtenu
-      </span>
-    )
-  }
-  if (status === 'founder_only') {
-    return (
-      <span
-        className="flex-shrink-0"
-        style={{
-          fontSize: '9px',
-          fontWeight: 700,
-          letterSpacing: '0.06em',
-          padding: '3px 7px',
-          borderRadius: '999px',
-          background: 'hsl(275 52% 48% / 0.09)',
-          color: 'hsl(275 58% 68%)',
-          border: '1px solid hsl(275 52% 48% / 0.18)',
-          textTransform: 'uppercase',
-          whiteSpace: 'nowrap',
-        }}
-      >
-        Fondateur
-      </span>
-    )
-  }
-  return null
-}
-
-function PriceDisplay({
-  product,
-  status,
-}: {
-  product: BoutiqueProduct
-  status: 'included' | 'owned' | 'available' | 'founder_only'
-}) {
-  if (status === 'included') {
-    return (
-      <span className="text-xs" style={{ color: 'hsl(248 10% 32%)' }}>
-        Déjà inclus dans ton plan
-      </span>
-    )
-  }
-  if (status === 'owned') {
-    return (
-      <span className="text-xs" style={{ color: 'hsl(248 10% 32%)' }}>
-        Déjà dans ton espace
-      </span>
-    )
-  }
-  if (status === 'founder_only') {
-    return (
-      <Link
-        href="/abonnement"
-        className="text-xs transition-opacity hover:opacity-70"
-        style={{ color: 'hsl(275 52% 60%)' }}
-      >
-        Passer Fondateur →
-      </Link>
-    )
-  }
-
-  return (
-    <div className="flex items-center gap-3">
-      <div className="flex items-baseline gap-2">
-        <span
-          style={{
-            fontFamily: "'Cormorant Garamond', Georgia, serif",
-            fontSize: '20px',
-            fontWeight: 500,
-            color: 'hsl(38 14% 86%)',
-            lineHeight: 1,
-          }}
-        >
-          {formatPrice(product.priceAmount)}
-        </span>
-        {product.originalAmount && (
-          <span
-            className="text-xs line-through"
-            style={{ color: 'hsl(248 10% 32%)' }}
-          >
-            {formatPrice(product.originalAmount)}
-          </span>
-        )}
-      </div>
-      <button
-        className="btn-primary"
-        style={{ fontSize: '11px', padding: '5px 14px' }}
-        disabled
-        title="Paiement disponible prochainement"
-      >
-        Obtenir
-      </button>
-    </div>
+    </Link>
   )
 }

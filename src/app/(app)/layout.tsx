@@ -1,5 +1,6 @@
 // src/app/(app)/layout.tsx
 // Layout principal — protège les routes + fournit nav globale + langue
+// Refonte : Safe-areas, padding mobile-first
 
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
@@ -59,8 +60,17 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           isAdmin={isAdmin}
         />
 
-        {/* pt-14 = hauteur TopBar fixe / pb-24 = hauteur BottomNav */}
-        <main className="flex-1 pt-14 pb-24">
+        {/* 
+          pt-14 = hauteur TopBar fixe (56px)
+          pb-24 = hauteur BottomNav (96px avec safe-area)
+          Utilise safe-area-inset pour les notches iPhone
+        */}
+        <main
+          className="flex-1 pt-14 pb-24"
+          style={{
+            paddingBottom: 'calc(96px + max(env(safe-area-inset-bottom, 0px), 0px))',
+          }}
+        >
           {children}
         </main>
 

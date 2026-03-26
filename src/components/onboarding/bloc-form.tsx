@@ -86,45 +86,50 @@ export function BlocForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-10">
 
-      {/* Barre de progression */}
-      <div className="space-y-2">
+      {/* Barre de progression — plus visible */}
+      <div className="space-y-3">
         <div className="flex items-center justify-between">
           <span className="label-section">{label}</span>
-          <span className="text-xs" style={{ color: 'hsl(248 8% 40%)' }}>
+          <span className="text-xs font-medium" style={{ color: 'hsl(248 10% 50%)' }}>
             {bloc} / {progressBlocs}
           </span>
         </div>
         <div
-          className="h-px w-full rounded-full overflow-hidden"
-          style={{ background: 'hsl(var(--border-bright))' }}
+          className="h-1.5 w-full rounded-full overflow-hidden"
+          style={{ background: 'hsl(248 22% 14%)' }}
         >
           <div
             className="h-full rounded-full transition-all duration-700 ease-out"
             style={{
               width: `${progressPct}%`,
               background: 'linear-gradient(to right, hsl(38 40% 40%), hsl(38 52% 65%))',
+              boxShadow: '0 0 16px hsl(38 52% 58% / 0.3)',
             }}
           />
         </div>
       </div>
 
-      {/* En-tête du bloc */}
-      <div className="text-center space-y-3">
+      {/* En-tête du bloc — plus imposant et immersif */}
+      <div className="text-center space-y-4 animate-fade-up">
         <div
-          className="mx-auto h-12 w-12 rounded-full flex items-center justify-center text-xl transition-all duration-500"
+          className="mx-auto h-14 w-14 rounded-full flex items-center justify-center text-2xl transition-all duration-500"
           style={{
-            background: 'hsl(38 52% 58% / 0.06)',
-            border: '1px solid hsl(38 52% 58% / 0.18)',
+            background: 'hsl(38 52% 58% / 0.08)',
+            border: '1px solid hsl(38 52% 58% / 0.20)',
             color: 'hsl(38 52% 65%)',
+            boxShadow: '0 0 24px hsl(38 52% 58% / 0.08)',
           }}
         >
           {symbol}
         </div>
         <div>
-          <h2 className="font-serif text-2xl font-medium" style={{ color: 'hsl(38 22% 90%)' }}>
+          <h2
+            className="font-serif text-2xl font-medium"
+            style={{ color: 'hsl(38 14% 92%)' }}
+          >
             {label}
           </h2>
-          <p className="text-sm mt-1" style={{ color: 'hsl(248 8% 50%)' }}>
+          <p className="text-base mt-2" style={{ color: 'hsl(248 10% 50%)' }}>
             {intro}
           </p>
         </div>
@@ -133,12 +138,12 @@ export function BlocForm({
       {/* Ligne or */}
       <div className="divider-gold" />
 
-      {/* Questions */}
-      <div className="space-y-8">
+      {/* Questions — espacement amélioré */}
+      <div className="space-y-9">
         {questions.map((question, idx) => (
           <div
             key={question.key}
-            className="space-y-2 animate-fade-up"
+            className="space-y-3 animate-fade-up"
             style={{ animationDelay: `${idx * 80}ms` }}
           >
             <QuestionRenderer
@@ -149,27 +154,32 @@ export function BlocForm({
               disabled={isSubmitting}
             />
             {validationErrors[question.key] && (
-              <p className="text-xs" style={{ color: 'hsl(0 70% 55%)' }}>
-                {validationErrors[question.key]}
+              <p className="text-sm font-medium" style={{ color: 'hsl(0 70% 65%)' }}>
+                ⚠ {validationErrors[question.key]}
               </p>
             )}
           </div>
         ))}
       </div>
 
-      {/* Navigation */}
-      <div className="flex gap-3 pt-2">
+      {/* Navigation — zones de frappe plus grandes */}
+      <div className="flex gap-3 pt-4">
         {showBack && (
           <button
-            type="button" onClick={onBack} disabled={isSubmitting}
-            className="btn-ghost px-5 py-3"
+            type="button"
+            onClick={onBack}
+            disabled={isSubmitting}
+            className="btn-ghost px-6 py-3.5 text-base font-medium"
+            style={{ minWidth: '48px', minHeight: '48px' }}
           >
-            ←
+            ← {lang === 'fr' ? 'Retour' : 'Back'}
           </button>
         )}
         <button
-          type="submit" disabled={isSubmitting}
-          className="btn-primary flex-1 py-3"
+          type="submit"
+          disabled={isSubmitting}
+          className="btn-primary flex-1 py-3.5 text-base font-medium"
+          style={{ minHeight: '48px' }}
         >
           {isSubmitting
             ? (lang === 'fr' ? 'Un instant…' : 'Loading…')

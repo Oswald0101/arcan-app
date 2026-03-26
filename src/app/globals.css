@@ -1,6 +1,7 @@
 /* ============================================================
-   Voie Design System v3 — Premium Dark
+   Voie Design System v4 — Mystique Moderne Premium
    Références : Linear, Arc, Apple, Stripe dark mode
+   Refonte : Profondeur, Typographie, Mobile-First
    ============================================================ */
 
 @tailwind base;
@@ -12,13 +13,13 @@
 /* ── Variables ────────────────────────────────────────── */
 @layer base {
   :root {
-    /* Fond */
+    /* Fond — Profondeur accrue */
     --background:        246 40% 3%;    /* #06050E */
     --surface:           248 32% 7%;    /* #0B0A17 */
     --surface-elevated:  248 28% 11%;   /* #111027 */
     --surface-overlay:   248 24% 16%;   /* #1B1933 */
 
-    /* Texte */
+    /* Texte — Contraste amélioré */
     --foreground:        38  14% 92%;   /* #EAE6DE */
     --foreground-dim:    248 10% 60%;   /* #928FA3 */
     --muted:             248 24% 12%;
@@ -29,7 +30,7 @@
     --border-bright:     248 18% 20%;   /* #272540 */
     --input:             248 28% 8%;
 
-    /* Accent or */
+    /* Accent or — Raffiné */
     --accent:            38  52% 60%;   /* #CAA870 */
     --accent-dim:        38  35% 35%;
     --accent-foreground: 246 40% 3%;
@@ -39,17 +40,17 @@
     --destructive: 0  65% 50%;
     --success:    148 50% 40%;
 
-    /* ── Shadows ── */
+    /* ── Shadows — Profondeur accrue ── */
     --shadow-sm:  0 1px 3px hsl(246 40% 2% / 0.5);
     --shadow-md:  0 4px 16px hsl(246 40% 2% / 0.55), 0 1px 4px hsl(246 40% 2% / 0.35);
     --shadow-lg:  0 8px 32px hsl(246 40% 2% / 0.65), 0 2px 8px hsl(246 40% 2% / 0.40);
     --shadow-xl:  0 20px 60px hsl(246 40% 2% / 0.75), 0 4px 16px hsl(246 40% 2% / 0.45);
 
-    /* ── Glows ── */
-    --glow-xs:  0 0  8px hsl(38 52% 58% / 0.18);
-    --glow-sm:  0 0 16px hsl(38 52% 58% / 0.20), 0 0 40px hsl(38 52% 58% / 0.06);
-    --glow-md:  0 0 24px hsl(38 52% 58% / 0.22), 0 0 80px hsl(38 52% 58% / 0.08);
-    --glow-lg:  0 0 40px hsl(38 52% 58% / 0.28), 0 0 120px hsl(38 52% 58% / 0.10);
+    /* ── Glows — Plus subtils ── */
+    --glow-xs:  0 0  8px hsl(38 52% 58% / 0.15);
+    --glow-sm:  0 0 16px hsl(38 52% 58% / 0.18), 0 0 40px hsl(38 52% 58% / 0.05);
+    --glow-md:  0 0 24px hsl(38 52% 58% / 0.20), 0 0 80px hsl(38 52% 58% / 0.07);
+    --glow-lg:  0 0 40px hsl(38 52% 58% / 0.25), 0 0 120px hsl(38 52% 58% / 0.09);
   }
 
   *, *::before, *::after { box-sizing: border-box; }
@@ -62,22 +63,18 @@
     font-feature-settings: 'kern' 1, 'liga' 1;
 
     /* ── Mobile fondation ── */
-    /* Supprime le flash bleu iOS/Android sur chaque tap */
     -webkit-tap-highlight-color: transparent;
-    /* Désactive le menu contextuel iOS sur appui long sur les éléments UI */
     -webkit-touch-callout: none;
-    /* Hauteur réelle sur mobile (exclut la barre navigateur) */
     height: 100%;
   }
 
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    font-size: 15px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+    font-size: 16px; /* Mobile-first : 16px de base pour éviter le zoom iOS */
     line-height: 1.6;
     min-height: 100dvh;
-    /* Scroll natif iOS avec rubber-band — ne pas mettre overflow:hidden ici */
     overscroll-behavior-y: auto;
 
     /* Fond spatial multicouches */
@@ -90,14 +87,14 @@
       radial-gradient(ellipse 90% 70% at 50% 50%,  hsl(250 45%  5% / 0.70) 0%, transparent 80%);
   }
 
-  /* Grain subtil — z-index au-dessus de tout */
+  /* Grain subtil — texture premium */
   body::after {
     content: '';
     position: fixed;
     inset: 0;
     pointer-events: none;
     z-index: 9999;
-    opacity: 0.018;
+    opacity: 0.015;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
@@ -115,14 +112,17 @@
   h1, h2, h3, .font-serif, .serif { font-family: 'Cormorant Garamond', Georgia, serif; }
 
   /* ── Mobile — éléments interactifs ── */
-  /* Supprime le délai 300ms iOS sur les taps */
   button, a, [role="button"], input, textarea, select, label {
     touch-action: manipulation;
   }
-  /* Empêche la sélection de texte sur les éléments UI */
   button, [role="button"], nav a {
     user-select: none;
     -webkit-user-select: none;
+  }
+
+  /* ── Inputs 16px pour éviter zoom iOS ── */
+  input, textarea, select {
+    font-size: 16px;
   }
 }
 
@@ -137,7 +137,7 @@
   .card {
     background: hsl(var(--surface));
     border: 1px solid hsl(248 22% 14%);
-    border-radius: 18px;
+    border-radius: 20px;
     box-shadow:
       inset 0 1px 0 hsl(248 100% 100% / 0.05),
       var(--shadow-md);
@@ -147,7 +147,7 @@
   .card-elevated {
     background: linear-gradient(150deg, hsl(248 30% 12%) 0%, hsl(248 28% 10%) 100%);
     border: 1px solid hsl(248 22% 18%);
-    border-radius: 18px;
+    border-radius: 20px;
     box-shadow:
       inset 0 1px 0 hsl(248 100% 100% / 0.06),
       var(--shadow-lg);
@@ -157,7 +157,7 @@
   .card-glass {
     background: hsl(248 32% 7% / 0.80);
     border: 1px solid hsl(248 20% 20% / 0.60);
-    border-radius: 18px;
+    border-radius: 20px;
     backdrop-filter: blur(24px) saturate(160%);
     -webkit-backdrop-filter: blur(24px) saturate(160%);
     box-shadow:
@@ -169,7 +169,7 @@
   .card-premium {
     background: linear-gradient(145deg, hsl(248 32% 10%) 0%, hsl(250 28% 8%) 100%);
     border: 1px solid hsl(38 35% 25% / 0.28);
-    border-radius: 22px;
+    border-radius: 24px;
     box-shadow:
       inset 0 1px 0 hsl(38 100% 80% / 0.07),
       inset 0 -1px 0 hsl(246 40% 0%  / 0.20),
@@ -177,7 +177,7 @@
       0 0 80px hsl(38 52% 58% / 0.04);
   }
 
-  /* Carte avec glow au hover — pour les cards cliquables */
+  /* Carte avec glow au hover */
   .card-hover {
     transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease;
   }
@@ -201,12 +201,12 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    padding: 13px 24px;
-    font-size: 0.875rem;
+    padding: 14px 28px;
+    font-size: 0.95rem;
     font-weight: 600;
     letter-spacing: 0.015em;
     border: none;
-    border-radius: 13px;
+    border-radius: 14px;
     cursor: pointer;
     outline: none;
     overflow: hidden;
@@ -255,10 +255,10 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    padding: 11px 20px;
-    font-size: 0.875rem;
+    padding: 12px 22px;
+    font-size: 0.95rem;
     font-weight: 500;
-    border-radius: 12px;
+    border-radius: 13px;
     border: 1px solid hsl(248 20% 22%);
     background: transparent;
     color: hsl(var(--foreground-dim));
@@ -278,10 +278,10 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    padding: 10px 18px;
-    font-size: 0.875rem;
+    padding: 11px 20px;
+    font-size: 0.95rem;
     font-weight: 500;
-    border-radius: 12px;
+    border-radius: 13px;
     background: hsl(0 65% 50% / 0.10);
     color: hsl(0 65% 70%);
     border: 1px solid hsl(0 65% 50% / 0.18);
@@ -296,12 +296,12 @@
 
   .input {
     width: 100%;
-    padding: 13px 16px;
+    padding: 14px 16px;
     background: hsl(var(--input));
     color: hsl(var(--foreground));
     border: 1px solid hsl(248 20% 17%);
     border-radius: 13px;
-    font-size: 0.9rem;
+    font-size: 16px; /* Mobile-first */
     outline: none;
     transition: all 0.2s ease;
     box-shadow: inset 0 2px 4px hsl(246 40% 2% / 0.35);
@@ -317,12 +317,12 @@
 
   .textarea {
     width: 100%;
-    padding: 13px 16px;
+    padding: 14px 16px;
     background: hsl(var(--input));
     color: hsl(var(--foreground));
     border: 1px solid hsl(248 20% 17%);
     border-radius: 13px;
-    font-size: 0.9rem;
+    font-size: 16px; /* Mobile-first */
     outline: none;
     resize: none;
     font-family: inherit;
@@ -339,12 +339,12 @@
 
   .select {
     width: 100%;
-    padding: 13px 40px 13px 16px;
+    padding: 14px 40px 14px 16px;
     background: hsl(var(--input));
     color: hsl(var(--foreground));
     border: 1px solid hsl(248 20% 17%);
     border-radius: 13px;
-    font-size: 0.9rem;
+    font-size: 16px; /* Mobile-first */
     outline: none;
     cursor: pointer;
     appearance: none;
@@ -365,7 +365,7 @@
 
   /* Grande étiquette section */
   .label-section {
-    font-size: 9px;
+    font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.2em;
     text-transform: uppercase;
@@ -375,7 +375,7 @@
   /* Label de champ */
   .label-field {
     display: block;
-    font-size: 0.75rem;
+    font-size: 0.875rem;
     font-weight: 500;
     color: hsl(248 10% 48%);
     margin-bottom: 6px;
@@ -397,9 +397,9 @@
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    padding: 3px 9px;
+    padding: 4px 10px;
     border-radius: 999px;
-    font-size: 0.7rem;
+    font-size: 0.8rem;
     font-weight: 600;
     letter-spacing: 0.03em;
   }
@@ -439,7 +439,7 @@
   ═══════════════════ */
 
   .status-dot-online {
-    width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
     background: hsl(148 52% 52%);
     box-shadow: 0 0 0 2px hsl(148 52% 52% / 0.15), 0 0 8px hsl(148 52% 52% / 0.4);
     animation: pulse-dot 2.5s ease-in-out infinite;
@@ -455,7 +455,7 @@
     justify-content: space-between;
     padding: 14px 16px;
     border-radius: 14px;
-    font-size: 0.875rem;
+    font-size: 0.95rem;
     color: hsl(var(--muted-foreground));
     cursor: pointer;
     transition: all 0.16s ease;

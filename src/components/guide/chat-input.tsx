@@ -1,5 +1,8 @@
 'use client'
 
+// src/components/guide/chat-input.tsx
+// Refonte : Input premium, zones de frappe augmentées, mobile-first
+
 import { useState, useRef } from 'react'
 
 interface ChatInputProps {
@@ -16,7 +19,7 @@ export function ChatInput({ onSend, disabled, placeholder }: ChatInputProps) {
     const el = textareaRef.current
     if (!el) return
     el.style.height = 'auto'
-    el.style.height = `${Math.min(el.scrollHeight, 180)}px`
+    el.style.height = `${Math.min(el.scrollHeight, 200)}px`
   }
 
   function handleSubmit(e?: React.FormEvent) {
@@ -38,7 +41,7 @@ export function ChatInput({ onSend, disabled, placeholder }: ChatInputProps) {
   const hasContent = value.trim().length > 0
 
   return (
-    <form onSubmit={handleSubmit} className="flex items-end gap-2">
+    <form onSubmit={handleSubmit} className="flex items-end gap-3">
       <textarea
         ref={textareaRef}
         value={value}
@@ -47,26 +50,35 @@ export function ChatInput({ onSend, disabled, placeholder }: ChatInputProps) {
         disabled={disabled}
         placeholder={placeholder ?? 'Écrire un message…'}
         rows={1}
-        className="flex-1 resize-none rounded-xl px-4 py-2.5 text-sm leading-relaxed outline-none max-h-[180px] overflow-y-auto transition-all duration-200"
+        className="textarea flex-1 resize-none max-h-[200px] overflow-y-auto"
         style={{
-          background: 'hsl(var(--input))',
-          border: `1px solid ${hasContent ? 'hsl(38 52% 58% / 0.3)' : 'hsl(var(--border-bright))'}`,
-          color: 'hsl(var(--foreground))',
+          fontSize: '16px',
+          minHeight: '44px',
+          paddingTop: '12px',
+          paddingBottom: '12px',
         }}
       />
       <button
         type="submit"
         disabled={disabled || !hasContent}
-        className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl transition-all duration-200 disabled:opacity-30"
+        className="flex-shrink-0 rounded-lg transition-all duration-200 active:scale-95"
         style={{
-          background: hasContent ? 'hsl(var(--accent))' : 'hsl(var(--surface-elevated))',
-          color: hasContent ? 'hsl(var(--accent-foreground))' : 'hsl(248 8% 45%)',
-          border: '1px solid hsl(var(--border-bright))',
-          boxShadow: hasContent ? '0 0 12px hsl(38 52% 58% / 0.2)' : 'none',
+          background: hasContent ? 'hsl(38 52% 58%)' : 'hsl(248 28% 11%)',
+          color: hasContent ? 'hsl(246 40% 5%)' : 'hsl(248 10% 40%)',
+          border: hasContent ? '1px solid hsl(38 52% 58%)' : '1px solid hsl(248 22% 16%)',
+          boxShadow: hasContent ? '0 4px 12px hsl(38 52% 58% / 0.25)' : 'none',
+          padding: '12px 14px',
+          minWidth: '44px',
+          minHeight: '44px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          opacity: disabled ? 0.5 : 1,
+          cursor: disabled ? 'not-allowed' : 'pointer',
         }}
         aria-label="Envoyer"
       >
-        <svg className="h-4 w-4" fill="none" viewBox="0 0 16 16">
+        <svg className="h-5 w-5" fill="none" viewBox="0 0 16 16">
           <path
             d="M2 8l12-6-6 12V8H2z"
             stroke="currentColor" strokeWidth="1.5"

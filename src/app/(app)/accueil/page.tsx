@@ -1,4 +1,6 @@
 // src/app/(app)/accueil/page.tsx
+// Refonte : Dashboard premium, mobile-first, hiérarchie visuelle forte
+
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getAccueilData } from '@/lib/supabase/queries/accueil'
@@ -37,49 +39,52 @@ export default async function AccueilPage() {
                 t(lang, 'greeting_evening')
 
   return (
-    <div className="mx-auto max-w-lg px-4 space-y-5">
+    <div className="mx-auto max-w-lg px-4 space-y-6 pb-4">
       {/* Intro ARCAN — première connexion uniquement */}
       <ArcanIntro userId={user.id} />
 
       {/* ── HERO ────────────────────────────────── */}
-      <div className="pt-8 pb-2 animate-fade-up">
-        <p className="label-section mb-2">{greeting}</p>
+      <div className="pt-6 pb-2 animate-fade-up">
+        <p className="label-section mb-3" style={{ color: 'hsl(248 10% 45%)' }}>{greeting}</p>
         <h1
           style={{
             fontFamily: "'Cormorant Garamond', Georgia, serif",
-            fontSize: 'clamp(52px, 13vw, 72px)',
+            fontSize: 'clamp(48px, 12vw, 64px)',
             fontWeight: 300,
             lineHeight: 1.0,
             letterSpacing: '-0.02em',
             color: 'hsl(38 14% 92%)',
+            marginBottom: '20px',
           }}
         >
           {memberName}
         </h1>
 
-        {/* XP sous le nom */}
+        {/* XP sous le nom — plus visible */}
         {memberProgress?.currentLevel && (
-          <div className="mt-4 flex items-center gap-3">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium" style={{ color: 'hsl(248 10% 50%)' }}>
+                {memberProgress.currentLevel.title}
+              </span>
+              <span className="text-sm font-medium" style={{ color: 'hsl(38 52% 65%)' }}>
+                {xpCurrent.toLocaleString()} / {xpRequired.toLocaleString()} XP
+              </span>
+            </div>
             <div
-              className="flex-1 h-px rounded-full overflow-hidden"
+              className="h-2 w-full rounded-full overflow-hidden"
               style={{ background: 'hsl(248 22% 14%)' }}
             >
               <div
                 className="h-full rounded-full"
                 style={{
                   width: `${xpPercent}%`,
-                  background: 'linear-gradient(to right, hsl(38 38% 40%), hsl(38 58% 65%))',
-                  boxShadow: '0 0 10px hsl(38 52% 58% / 0.5)',
+                  background: 'linear-gradient(to right, hsl(38 40% 45%), hsl(38 58% 65%))',
+                  boxShadow: '0 0 12px hsl(38 52% 58% / 0.4)',
                   transition: 'width 1s cubic-bezier(0.22,1,0.36,1)',
                 }}
               />
             </div>
-            <span
-              className="text-xs flex-shrink-0"
-              style={{ color: 'hsl(248 10% 40%)', fontVariantNumeric: 'tabular-nums' }}
-            >
-              {xpCurrent} <span style={{ color: 'hsl(248 10% 30%)' }}>/ {xpRequired} XP</span>
-            </span>
           </div>
         )}
       </div>
@@ -88,29 +93,30 @@ export default async function AccueilPage() {
       {pendingContactRequests > 0 && (
         <Link href="/contacts" className="block animate-fade-up delay-50">
           <div
-            className="flex items-center justify-between rounded-2xl px-4 py-3 text-sm transition-all hover:brightness-110"
+            className="flex items-center justify-between rounded-lg px-4 py-3.5 text-sm font-medium transition-all hover:brightness-110 active:scale-95"
             style={{
-              background: 'hsl(38 52% 58% / 0.07)',
-              border: '1px solid hsl(38 52% 58% / 0.18)',
+              background: 'hsl(38 52% 58% / 0.08)',
+              border: '1px solid hsl(38 52% 58% / 0.20)',
+              color: 'hsl(38 52% 65%)',
             }}
           >
-            <span style={{ color: 'hsl(38 22% 82%)' }}>
+            <span>
               {pendingContactRequests} demande{pendingContactRequests > 1 ? 's' : ''} de contact
             </span>
-            <span style={{ color: 'hsl(38 52% 60%)' }}>→</span>
+            <span>→</span>
           </div>
         </Link>
       )}
 
       {/* ── STATS MONUMENTAUX ───────────────────── */}
-      <div className="grid grid-cols-2 gap-3 animate-fade-up delay-100">
+      <div className="grid grid-cols-2 gap-4 animate-fade-up delay-100">
         {/* Streak */}
-        <div className="card p-5 space-y-1">
-          <div className="flex items-end gap-1.5">
+        <div className="card p-6 space-y-2">
+          <div className="flex items-end gap-2">
             <span
               style={{
                 fontFamily: "'Cormorant Garamond', Georgia, serif",
-                fontSize: '54px',
+                fontSize: '48px',
                 fontWeight: 300,
                 lineHeight: 1,
                 color: streakDays >= 7 ? 'hsl(38 58% 68%)' : 'hsl(38 14% 88%)',
@@ -120,18 +126,18 @@ export default async function AccueilPage() {
               {streakDays}
             </span>
             {streakDays >= 7 && (
-              <span className="text-xl pb-1">🔥</span>
+              <span className="text-2xl pb-1">🔥</span>
             )}
           </div>
           <p className="label-section">{t(lang, 'streak_days')}</p>
         </div>
 
         {/* Niveau */}
-        <div className="card p-5 space-y-1">
+        <div className="card p-6 space-y-2">
           <p
             style={{
               fontFamily: "'Cormorant Garamond', Georgia, serif",
-              fontSize: '36px',
+              fontSize: '32px',
               fontWeight: 300,
               lineHeight: 1,
               color: 'hsl(38 14% 88%)',
@@ -147,12 +153,12 @@ export default async function AccueilPage() {
       {guide && (
         <Link href="/guide" className="block animate-fade-up delay-150">
           <div
-            className="relative overflow-hidden rounded-2xl p-6 card-hover"
+            className="relative overflow-hidden rounded-lg p-6 card-hover"
             style={{
-              background: 'linear-gradient(135deg, hsl(250 35% 9%) 0%, hsl(260 40% 12%) 100%)',
-              border: '1px solid hsl(38 30% 20% / 0.28)',
+              background: 'linear-gradient(135deg, hsl(250 35% 10%) 0%, hsl(260 40% 13%) 100%)',
+              border: '1px solid hsl(38 30% 20% / 0.25)',
               boxShadow:
-                'inset 0 1px 0 hsl(38 100% 80% / 0.06), var(--shadow-xl)',
+                'inset 0 1px 0 hsl(38 100% 80% / 0.06), 0 8px 32px hsl(246 40% 2% / 0.65)',
             }}
           >
             {/* Halo ambiant animé */}
@@ -163,7 +169,7 @@ export default async function AccueilPage() {
                 right: '-15%',
                 width: '65%',
                 height: '200%',
-                background: 'radial-gradient(ellipse, hsl(38 52% 58% / 0.10) 0%, transparent 70%)',
+                background: 'radial-gradient(ellipse, hsl(38 52% 58% / 0.08) 0%, transparent 70%)',
                 pointerEvents: 'none',
                 animation: 'ambient 8s ease-in-out infinite',
               }}
@@ -175,7 +181,7 @@ export default async function AccueilPage() {
                 left: '5%',
                 width: '40%',
                 height: '120%',
-                background: 'radial-gradient(ellipse, hsl(265 55% 40% / 0.08) 0%, transparent 70%)',
+                background: 'radial-gradient(ellipse, hsl(265 55% 40% / 0.06) 0%, transparent 70%)',
                 pointerEvents: 'none',
                 animation: 'ambient 11s ease-in-out infinite reverse',
               }}
@@ -187,13 +193,13 @@ export default async function AccueilPage() {
               <div
                 className="flex-shrink-0 flex items-center justify-center rounded-full select-none"
                 style={{
-                  width: '52px',
-                  height: '52px',
-                  background: 'hsl(38 52% 58% / 0.10)',
-                  border: '1px solid hsl(38 52% 58% / 0.22)',
+                  width: '56px',
+                  height: '56px',
+                  background: 'hsl(38 52% 58% / 0.12)',
+                  border: '1px solid hsl(38 52% 58% / 0.25)',
                   color: 'hsl(38 58% 68%)',
-                  fontSize: '22px',
-                  boxShadow: 'var(--glow-sm)',
+                  fontSize: '24px',
+                  boxShadow: '0 0 20px hsl(38 52% 58% / 0.15)',
                 }}
               >
                 ◎
@@ -203,7 +209,7 @@ export default async function AccueilPage() {
                 <p
                   style={{
                     fontFamily: "'Cormorant Garamond', Georgia, serif",
-                    fontSize: '22px',
+                    fontSize: '20px',
                     fontWeight: 400,
                     color: 'hsl(38 14% 92%)',
                     lineHeight: 1.2,
@@ -212,8 +218,8 @@ export default async function AccueilPage() {
                   {guide.name}
                 </p>
                 <p
-                  className="text-xs capitalize mt-1"
-                  style={{ color: 'hsl(248 10% 46%)' }}
+                  className="text-sm capitalize mt-1"
+                  style={{ color: 'hsl(248 10% 48%)' }}
                 >
                   {guide.customTypeLabel ?? guide.canonicalType}
                 </p>
@@ -234,11 +240,11 @@ export default async function AccueilPage() {
             {/* Tagline sous la carte */}
             <div
               className="relative mt-5 pt-4"
-              style={{ borderTop: '1px solid hsl(38 20% 18% / 0.4)' }}
+              style={{ borderTop: '1px solid hsl(38 20% 18% / 0.3)' }}
             >
               <p
-                className="text-xs"
-                style={{ color: 'hsl(248 10% 42%)' }}
+                className="text-sm font-medium"
+                style={{ color: 'hsl(38 52% 65%)' }}
               >
                 Commence une conversation →
               </p>
@@ -249,9 +255,9 @@ export default async function AccueilPage() {
 
       {/* ── PRATIQUES DU JOUR ───────────────────── */}
       {todayPractices.length > 0 && (
-        <section className="space-y-3 animate-fade-up delay-200">
+        <section className="space-y-4 animate-fade-up delay-200">
           <SectionHeader title={t(lang, 'practices_today')} href="/progression" linkLabel={t(lang, 'see_all')} />
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             {todayPractices.map((practice: any) => (
               <PracticeItem
                 key={practice.id}
@@ -266,11 +272,11 @@ export default async function AccueilPage() {
 
       {/* ── ÉPREUVES ────────────────────────────── */}
       {activeChallenges.length > 0 && (
-        <section className="space-y-3 animate-fade-up delay-250">
+        <section className="space-y-4 animate-fade-up delay-250">
           <SectionHeader title="Épreuves en cours" href="/progression" linkLabel={t(lang, 'see_all')} />
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             {activeChallenges.map((log: any) => (
-              <div key={log.id} className="card px-4 py-3 flex items-center justify-between">
+              <div key={log.id} className="card px-4 py-3.5 flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium" style={{ color: 'hsl(38 14% 86%)' }}>
                     {log.challenge.title}
@@ -281,11 +287,11 @@ export default async function AccueilPage() {
                 </div>
                 <Link
                   href="/progression"
-                  className="text-xs px-3 py-1.5 rounded-xl transition-colors hover:bg-surface-elevated"
+                  className="text-xs px-3 py-1.5 rounded-lg font-medium transition-all hover:bg-surface-elevated active:scale-95"
                   style={{
                     background: 'hsl(248 28% 11%)',
                     border: '1px solid hsl(248 20% 18%)',
-                    color: 'hsl(38 14% 70%)',
+                    color: 'hsl(38 52% 65%)',
                   }}
                 >
                   Gérer
@@ -298,32 +304,25 @@ export default async function AccueilPage() {
 
       {/* ── MA VOIE ─────────────────────────────── */}
       {activePath && (
-        <section className="space-y-3 animate-fade-up delay-300">
+        <section className="space-y-4 animate-fade-up delay-300">
           <SectionHeader title={t(lang, 'my_path')} href={`/cercles/${activePath.slug}`} linkLabel={t(lang, 'see_all')} />
           <Link href={`/cercles/${activePath.slug}`} className="block card-hover">
-            <div
-              className="rounded-2xl p-5"
-              style={{
-                background: 'hsl(var(--surface))',
-                border: '1px solid hsl(248 22% 14%)',
-                boxShadow: 'inset 0 1px 0 hsl(248 100% 100% / 0.05)',
-              }}
-            >
+            <div className="rounded-lg p-6 card">
               <p
                 style={{
                   fontFamily: "'Cormorant Garamond', Georgia, serif",
-                  fontSize: '22px',
+                  fontSize: '20px',
                   fontWeight: 400,
                   color: 'hsl(38 14% 90%)',
                 }}
               >
                 {activePath.name}
               </p>
-              <div className="flex items-center gap-3 mt-2">
+              <div className="flex items-center gap-3 mt-3">
                 {pathProgress?.currentRank && (
                   <span className="badge badge-gold">{pathProgress.currentRank.title}</span>
                 )}
-                <p className="text-xs" style={{ color: 'hsl(248 10% 42%)' }}>
+                <p className="text-sm" style={{ color: 'hsl(248 10% 45%)' }}>
                   {activePath.memberCount} membre{activePath.memberCount !== 1 ? 's' : ''}
                 </p>
               </div>
@@ -334,26 +333,26 @@ export default async function AccueilPage() {
 
       {/* ── BADGES RÉCENTS ──────────────────────── */}
       {recentBadges.length > 0 && (
-        <section className="space-y-3 animate-fade-up delay-350">
+        <section className="space-y-4 animate-fade-up delay-350">
           <SectionHeader title={t(lang, 'recent_badges')} href="/progression" linkLabel={t(lang, 'see_all')} />
-          <div className="flex gap-2.5">
+          <div className="flex gap-3">
             {recentBadges.map((ub: any) => (
               <div
                 key={ub.id}
-                className="card p-3.5 text-center space-y-2 flex-1"
+                className="card p-4 text-center space-y-2 flex-1"
               >
                 {ub.badge.imageUrl ? (
-                  <img src={ub.badge.imageUrl} alt="" className="h-8 w-8 mx-auto" />
+                  <img src={ub.badge.imageUrl} alt="" className="h-9 w-9 mx-auto" />
                 ) : (
                   <div
                     className="h-9 w-9 mx-auto rounded-full flex items-center justify-center"
                     style={{ background: 'hsl(38 52% 58% / 0.10)', color: 'hsl(38 58% 65%)', fontSize: '16px' }}
                   >
-                    ✦
+                    ◆
                   </div>
                 )}
-                <p className="text-[10px] truncate" style={{ color: 'hsl(248 10% 46%)' }}>
-                  {ub.badge.title}
+                <p className="text-xs font-medium" style={{ color: 'hsl(248 10% 50%)' }}>
+                  {ub.badge.name}
                 </p>
               </div>
             ))}
@@ -361,61 +360,43 @@ export default async function AccueilPage() {
         </section>
       )}
 
-      {/* ── CTA PREMIUM ─────────────────────────── */}
+      {/* ── PREMIUM CTA ─────────────────────────── */}
       {planKey === 'free' && (
-        <Link href="/abonnement" className="block animate-fade-up delay-400">
-          <div
-            className="rounded-2xl p-6 text-center card-hover"
-            style={{
-              background: 'linear-gradient(145deg, hsl(248 30% 9%) 0%, hsl(38 20% 8%) 100%)',
-              border: '1px solid hsl(38 30% 18% / 0.35)',
-              boxShadow: 'inset 0 1px 0 hsl(38 100% 80% / 0.05)',
-            }}
-          >
-            <p
+        <section className="space-y-4 animate-fade-up delay-400">
+          <Link href="/abonnement" className="block">
+            <div
+              className="rounded-lg p-6 text-center space-y-3 card-hover"
               style={{
-                fontFamily: "'Cormorant Garamond', Georgia, serif",
-                fontSize: '22px',
-                fontWeight: 400,
-                color: 'hsl(38 14% 88%)',
+                background: 'linear-gradient(135deg, hsl(38 52% 58% / 0.08) 0%, hsl(38 52% 58% / 0.04) 100%)',
+                border: '1px solid hsl(38 52% 58% / 0.15)',
               }}
             >
-              {t(lang, 'go_premium')}
-            </p>
-            <p className="text-xs mt-2" style={{ color: 'hsl(248 10% 44%)' }}>
-              Guide avancé · Codex complet · Progression sans limite
-            </p>
-            <div
-              className="inline-flex items-center gap-2 mt-4 text-xs font-medium"
-              style={{ color: 'hsl(38 55% 62%)' }}
-            >
-              Découvrir <span>→</span>
+              <p className="text-sm font-medium" style={{ color: 'hsl(38 52% 65%)' }}>
+                Passe Premium
+              </p>
+              <p className="text-xs" style={{ color: 'hsl(248 10% 45%)' }}>
+                Débloque plus de contenu et de personnalisation
+              </p>
             </div>
-          </div>
-        </Link>
+          </Link>
+        </section>
       )}
-
-      <div className="h-6" />
     </div>
   )
 }
 
-function SectionHeader({
-  title, href, linkLabel,
-}: {
-  title: string
-  href: string
-  linkLabel: string
-}) {
+// ── Section Header ────────────────────────────────────────
+
+function SectionHeader({ title, href, linkLabel }: { title: string; href: string; linkLabel: string }) {
   return (
     <div className="flex items-center justify-between">
-      <p className="label-section">{title}</p>
+      <h2 className="label-section">{title}</h2>
       <Link
         href={href}
-        className="text-xs transition-opacity hover:opacity-60"
-        style={{ color: 'hsl(38 52% 52%)' }}
+        className="text-xs font-medium transition-opacity hover:opacity-70"
+        style={{ color: 'hsl(38 52% 65%)' }}
       >
-        {linkLabel}
+        {linkLabel} →
       </Link>
     </div>
   )

@@ -1,4 +1,6 @@
 // src/components/layout/top-bar.tsx
+// Refonte : Header premium, safe-area, zones de frappe augmentées
+
 import Link from 'next/link'
 import { NotificationBell } from '@/components/notifications/notification-bell'
 import { UserAvatar } from '@/components/profile/user-avatar'
@@ -21,17 +23,22 @@ export function TopBar({ username, displayName, avatarUrl, level, isAdmin }: Top
         WebkitBackdropFilter: 'blur(28px) saturate(180%)',
         borderBottom: '1px solid hsl(248 22% 13% / 0.60)',
         boxShadow: '0 1px 0 hsl(248 100% 100% / 0.025), 0 4px 24px hsl(246 40% 2% / 0.20)',
+        paddingTop: 'max(env(safe-area-inset-top, 0px), 0px)',
       }}
     >
-      <div className="mx-auto flex max-w-lg items-center justify-between px-4 h-14">
+      <div
+        className="mx-auto flex max-w-lg items-center justify-between px-4"
+        style={{
+          height: '56px',
+        }}
+      >
 
         {/* Logo ARCAN */}
-        <Link href="/accueil" className="flex items-center gap-2.5 group">
+        <Link href="/accueil" className="flex items-center gap-2.5 group transition-opacity hover:opacity-70">
           <span
-            className="transition-all duration-300 group-hover:opacity-70"
             style={{
               fontFamily: "'Cormorant Garamond', Georgia, serif",
-              fontSize: '22px',
+              fontSize: '20px',
               fontWeight: 400,
               letterSpacing: '0.15em',
               color: 'hsl(38 55% 62%)',
@@ -42,18 +49,19 @@ export function TopBar({ username, displayName, avatarUrl, level, isAdmin }: Top
         </Link>
 
         {/* Droite */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           {/* Badge niveau */}
           <span
             style={{
-              fontSize: '10px',
+              fontSize: '11px',
               fontWeight: 600,
               letterSpacing: '0.08em',
-              padding: '3px 9px',
+              padding: '4px 10px',
               borderRadius: '999px',
-              background: 'hsl(38 52% 58% / 0.09)',
-              color: 'hsl(38 55% 60%)',
-              border: '1px solid hsl(38 52% 58% / 0.16)',
+              background: 'hsl(38 52% 58% / 0.10)',
+              color: 'hsl(38 55% 62%)',
+              border: '1px solid hsl(38 52% 58% / 0.18)',
+              textTransform: 'uppercase',
             }}
           >
             Niv.{level}
@@ -64,20 +72,20 @@ export function TopBar({ username, displayName, avatarUrl, level, isAdmin }: Top
             <Link
               href="/admin"
               title="Console admin"
+              className="transition-all hover:opacity-70"
               style={{
                 display: 'flex',
                 alignItems: 'center',
                 gap: '5px',
-                fontSize: '10px',
+                fontSize: '11px',
                 fontWeight: 700,
                 letterSpacing: '0.08em',
                 padding: '4px 10px',
                 borderRadius: '999px',
                 textTransform: 'uppercase',
                 background: 'hsl(248 30% 8%)',
-                color: 'hsl(38 52% 52%)',
+                color: 'hsl(38 52% 55%)',
                 border: '1px solid hsl(38 52% 58% / 0.20)',
-                transition: 'all 0.2s ease',
                 textDecoration: 'none',
               }}
             >
@@ -90,10 +98,15 @@ export function TopBar({ username, displayName, avatarUrl, level, isAdmin }: Top
 
           <Link
             href="/profil"
-            className="block rounded-full transition-all duration-200 hover:ring-2 hover:ring-offset-2"
+            className="block rounded-full transition-all duration-200 hover:ring-2 hover:ring-offset-2 active:scale-95"
             style={{
               '--tw-ring-color': 'hsl(38 52% 58% / 0.30)',
               '--tw-ring-offset-color': 'hsl(var(--background))',
+              minWidth: '40px',
+              minHeight: '40px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
             } as React.CSSProperties}
           >
             <UserAvatar
