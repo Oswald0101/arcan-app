@@ -41,7 +41,7 @@ type ActionResult<T = void> =
 // ============================================================
 
 export async function initOrResumeOnboarding(): Promise<
-  ActionResult<{ sessionId: string; currentBloc: number; answeredKeys: string[] }>
+  ActionResult<{ sessionId: string; currentBloc: number; savedAnswers: AnswerPayload[] }>
 > {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -50,17 +50,24 @@ export async function initOrResumeOnboarding(): Promise<
   const existing = await getActiveSession(user.id)
 
   if (existing) {
-    const answeredKeys = (existing.answers ?? []).map((a: any) => a.questionKey)
+    const savedAnswers: AnswerPayload[] = (existing.answers ?? []).map((a: any) => ({
+      questionKey: a.questionKey,
+      questionType: a.questionType,
+      answerText: a.answerText ?? undefined,
+      answerChoice: a.answerChoice ?? undefined,
+      answerChoices: a.answerChoices ?? [],
+      answerScale: a.answerScale ?? undefined,
+    }))
     return {
       success: true,
-      data: { sessionId: existing.id, currentBloc: existing.currentBloc, answeredKeys },
+      data: { sessionId: existing.id, currentBloc: existing.currentBloc, savedAnswers },
     }
   }
 
   const created = await createSession(user.id)
   return {
     success: true,
-    data: { sessionId: created.id, currentBloc: created.currentBloc, answeredKeys: [] },
+    data: { sessionId: created.id, currentBloc: created.currentBloc, savedAnswers: [] },
   }
 }
 
@@ -289,6 +296,15 @@ export async function generateOnboardingResult(
 
   // 13. Finaliser l'onboarding
   await finalizeOnboarding(user.id)
+
+  // 14. Sauvegarder le nom membre comme displayName
+  const memberNameAnswer = getAnswer('member_name')?.answerText?.trim()
+  if (memberNameAnswer) {
+    await prisma.profile.update({
+      where: { userId: user.id },
+      data: { displayName: memberNameAnswer },
+    }).catch(() => null)
+  }
 
   revalidatePath('/', 'layout')
 

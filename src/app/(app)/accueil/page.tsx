@@ -26,7 +26,12 @@ export default async function AccueilPage() {
   } = data
 
   const lang: Lang = 'fr'
-  const memberName = profile?.displayName || profile?.username || 'Explorateur'
+  const isAutoUsername = (u?: string | null) =>
+    !u || /^[0-9a-f-]{8,}$/i.test(u) || u.startsWith('user_')
+  const memberName =
+    profile?.displayName ||
+    (isAutoUsername(profile?.username) ? null : profile?.username) ||
+    'Explorateur'
   const xpCurrent = profile?.currentXp ?? 0
   const xpRequired = memberProgress?.currentLevel?.requiredXp ?? 1000
   const xpPercent = Math.min(100, Math.round((xpCurrent / xpRequired) * 100))

@@ -408,7 +408,7 @@ export async function finalizeOnboarding(userId: string) {
       where: { userId },
       create: {
         userId,
-        username: userId.slice(0, 20),
+        username: `user_${userId.slice(0, 8)}`,
         onboardingCompleted: true,
         onboardingCompletedAt: new Date(),
       },
@@ -418,6 +418,12 @@ export async function finalizeOnboarding(userId: string) {
         updatedAt: new Date(),
       },
     })
+
+    // Activer le compte (permet l'accès aux profils publics)
+    await tx.user.update({
+      where: { id: userId },
+      data: { accountStatus: 'active' },
+    }).catch(() => null)
 
     // Créer la progression membre initiale si elle n'existe pas
     await tx.userMemberProgress.upsert({
