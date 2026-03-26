@@ -1,7 +1,6 @@
-// src/components/profile/avatar-picker.tsx
-// Refonte : Sélecteur d'avatar plein écran, mobile-first, prévention des écrans noirs
-
 'use client'
+
+// Refonte Ultra-Premium : Sélecteur d'avatar immersif avec glows et zones de frappe optimisées
 
 import { useState } from 'react'
 import { GALLERY_AVATARS, encodeGalleryAvatar, decodeGalleryAvatar } from '@/constants/avatars'
@@ -54,24 +53,26 @@ export function AvatarPicker({ userId, currentAvatarUrl }: AvatarPickerProps) {
   const currentAvatar = selected !== null ? GALLERY_AVATARS[selected] : null
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       <span className="label-field">Avatar</span>
 
-      {/* Aperçu + bouton ouvrir */}
-      <div className="flex items-center gap-4">
+      {/* Aperçu + bouton ouvrir — ultra-premium */}
+      <div className="flex items-center gap-5">
         <div
-          className="h-20 w-20 rounded-full flex-shrink-0 flex items-center justify-center select-none transition-all duration-200"
+          className="h-24 w-24 rounded-full flex-shrink-0 flex items-center justify-center select-none transition-all duration-300 group"
           style={{
             background: currentAvatar
               ? `linear-gradient(135deg, ${currentAvatar.bgFrom}, ${currentAvatar.bgTo})`
               : 'linear-gradient(135deg, hsl(248 28% 14%), hsl(248 24% 10%))',
             border: currentAvatar
-              ? `2px solid ${currentAvatar.borderColor}`
-              : '2px solid hsl(248 16% 22%)',
+              ? `2.5px solid ${currentAvatar.borderColor}`
+              : '2.5px solid hsl(248 16% 22%)',
             color: currentAvatar?.textColor ?? 'hsl(248 10% 55%)',
-            fontSize: '2rem',
+            fontSize: '2.5rem',
             lineHeight: 1,
-            boxShadow: currentAvatar ? `0 0 20px ${currentAvatar.bgFrom}40` : 'none',
+            boxShadow: currentAvatar
+              ? `0 0 32px ${currentAvatar.bgFrom}50, inset 0 1px 0 ${currentAvatar.textColor}15`
+              : 'inset 0 1px 0 hsl(248 100% 100% / 0.05)',
           }}
         >
           {currentAvatar?.symbol ?? '◯'}
@@ -80,19 +81,19 @@ export function AvatarPicker({ userId, currentAvatarUrl }: AvatarPickerProps) {
         <button
           type="button"
           onClick={() => setIsOpen(true)}
-          className="btn-primary text-sm px-5 py-3"
+          className="btn-primary text-base px-6 py-3 font-semibold"
           style={{ minHeight: '48px' }}
         >
           Changer
         </button>
       </div>
 
-      {/* Modal galerie — plein écran sur mobile */}
+      {/* Modal galerie — plein écran sur mobile avec ambiance mystique */}
       {isOpen && (
         <div
           className="fixed inset-0 z-50 flex flex-col"
           style={{
-            background: 'hsl(var(--background))',
+            background: 'linear-gradient(135deg, hsl(246 40% 3%) 0%, hsl(250 40% 5%) 100%)',
             paddingTop: 'max(env(safe-area-inset-top, 0px), 0px)',
             paddingBottom: 'max(env(safe-area-inset-bottom, 0px), 0px)',
           }}
@@ -100,38 +101,43 @@ export function AvatarPicker({ userId, currentAvatarUrl }: AvatarPickerProps) {
             if (e.target === e.currentTarget) setIsOpen(false)
           }}
         >
-          {/* Header */}
+          {/* Header — ultra-premium */}
           <div
-            className="flex items-center justify-between px-4 py-4 flex-shrink-0"
-            style={{ borderBottom: '1px solid hsl(248 22% 14%)' }}
+            className="flex items-center justify-between px-5 py-5 flex-shrink-0"
+            style={{
+              borderBottom: '1.5px solid hsl(38 35% 25% / 0.15)',
+              background: 'linear-gradient(to bottom, hsl(248 32% 10%) 0%, transparent 100%)',
+            }}
           >
             <div>
-              <h3 className="font-serif text-2xl font-medium" style={{ color: 'hsl(38 22% 90%)' }}>
+              <h3 className="font-serif text-3xl font-medium" style={{ color: 'hsl(38 14% 95%)', textShadow: '0 2px 8px hsl(246 40% 2% / 0.30)' }}>
                 Choisis ton avatar
               </h3>
-              <p className="text-sm mt-1" style={{ color: 'hsl(248 10% 50%)' }}>
+              <p className="text-sm mt-2 font-medium" style={{ color: 'hsl(248 10% 52%)' }}>
                 {GALLERY_AVATARS.length} avatars disponibles
               </p>
             </div>
             <button
               type="button"
               onClick={() => setIsOpen(false)}
-              className="h-10 w-10 rounded-full flex items-center justify-center text-2xl transition-all hover:bg-surface-elevated active:scale-95"
+              className="h-12 w-12 rounded-full flex items-center justify-center text-2xl transition-all hover:brightness-125 active:scale-95"
               style={{
-                color: 'hsl(248 10% 50%)',
+                color: 'hsl(248 10% 55%)',
                 minHeight: '48px',
                 minWidth: '48px',
+                background: 'hsl(248 28% 11%)',
+                border: '1px solid hsl(248 22% 18%)',
               }}
             >
               ✕
             </button>
           </div>
 
-          {/* Filtres palette — plus visibles */}
+          {/* Filtres palette — ultra-visibles */}
           <div
-            className="flex gap-2 px-4 py-4 overflow-x-auto flex-shrink-0"
+            className="flex gap-3 px-5 py-5 overflow-x-auto flex-shrink-0"
             style={{
-              borderBottom: '1px solid hsl(248 22% 14%)',
+              borderBottom: '1.5px solid hsl(38 35% 25% / 0.15)',
               scrollBehavior: 'smooth',
               WebkitOverflowScrolling: 'touch',
             }}
@@ -139,7 +145,8 @@ export function AvatarPicker({ userId, currentAvatarUrl }: AvatarPickerProps) {
             <button
               type="button"
               onClick={() => setActiveFilter(null)}
-              className={`text-sm px-4 py-2 rounded-full font-medium flex-shrink-0 transition-all ${activeFilter === null ? 'badge-gold' : 'badge-muted'}`}
+              className={`text-sm px-5 py-2.5 rounded-full font-semibold flex-shrink-0 transition-all ${activeFilter === null ? 'badge-gold' : 'badge-muted'}`}
+              style={{ minHeight: '40px' }}
             >
               Tous
             </button>
@@ -148,12 +155,13 @@ export function AvatarPicker({ userId, currentAvatarUrl }: AvatarPickerProps) {
                 key={i}
                 type="button"
                 onClick={() => setActiveFilter(activeFilter === i ? null : i)}
-                className="text-sm px-4 py-2 rounded-full font-medium flex-shrink-0 transition-all badge-muted"
+                className="text-sm px-5 py-2.5 rounded-full font-semibold flex-shrink-0 transition-all badge-muted"
                 style={{
+                  minHeight: '40px',
                   ...(activeFilter === i && {
                     background: `${PALETTE_COLORS[i]}18`,
                     color: PALETTE_COLORS[i],
-                    border: `1px solid ${PALETTE_COLORS[i]}40`,
+                    border: `1.5px solid ${PALETTE_COLORS[i]}40`,
                   }),
                 }}
               >
@@ -162,22 +170,22 @@ export function AvatarPicker({ userId, currentAvatarUrl }: AvatarPickerProps) {
             ))}
           </div>
 
-          {/* Grille — zones de frappe augmentées */}
+          {/* Grille — zones de frappe 80px minimum */}
           <div
-            className="flex-1 overflow-y-auto px-4 py-6"
+            className="flex-1 overflow-y-auto px-5 py-8"
             style={{
               scrollBehavior: 'smooth',
               WebkitOverflowScrolling: 'touch',
             }}
           >
-            <div className="grid grid-cols-4 gap-3 auto-rows-max">
+            <div className="grid grid-cols-3 gap-5 auto-rows-max">
               {filtered.map((avatar) => (
                 <button
                   key={avatar.id}
                   type="button"
                   onClick={() => handleSelect(avatar.id)}
                   disabled={saving}
-                  className="aspect-square rounded-2xl flex items-center justify-center text-3xl transition-all duration-150 hover:scale-105 active:scale-95 relative"
+                  className="aspect-square rounded-2xl flex items-center justify-center text-4xl transition-all duration-200 hover:scale-110 active:scale-95 relative group"
                   style={{
                     background: `linear-gradient(135deg, ${avatar.bgFrom}, ${avatar.bgTo})`,
                     border: selected === avatar.id
@@ -185,8 +193,8 @@ export function AvatarPicker({ userId, currentAvatarUrl }: AvatarPickerProps) {
                       : `2px solid ${avatar.borderColor}`,
                     color: avatar.textColor,
                     boxShadow: selected === avatar.id
-                      ? `0 0 0 4px hsl(var(--background)), 0 0 24px ${avatar.textColor}40`
-                      : `0 2px 8px hsl(246 40% 2% / 0.3)`,
+                      ? `0 0 0 5px hsl(246 40% 3%), 0 0 32px ${avatar.textColor}60, inset 0 1px 0 ${avatar.textColor}20`
+                      : `0 4px 16px hsl(246 40% 2% / 0.40), inset 0 1px 0 ${avatar.textColor}10`,
                     opacity: saving ? 0.5 : 1,
                     cursor: saving ? 'not-allowed' : 'pointer',
                     minHeight: '80px',
@@ -195,7 +203,7 @@ export function AvatarPicker({ userId, currentAvatarUrl }: AvatarPickerProps) {
                   <span style={{ lineHeight: 1 }}>{avatar.symbol}</span>
                   {selected === avatar.id && (
                     <span
-                      className="absolute bottom-2 right-2 text-sm leading-none font-bold"
+                      className="absolute bottom-3 right-3 text-lg leading-none font-bold animate-pulse"
                       style={{ color: avatar.textColor }}
                     >
                       ✓
@@ -209,10 +217,11 @@ export function AvatarPicker({ userId, currentAvatarUrl }: AvatarPickerProps) {
           {/* Footer — statut sauvegarde */}
           {saving && (
             <div
-              className="px-4 py-4 text-center text-sm font-medium flex-shrink-0"
+              className="px-5 py-5 text-center text-sm font-semibold flex-shrink-0"
               style={{
-                borderTop: '1px solid hsl(248 22% 14%)',
-                color: 'hsl(38 52% 65%)',
+                borderTop: '1.5px solid hsl(38 35% 25% / 0.15)',
+                color: 'hsl(38 65% 75%)',
+                background: 'linear-gradient(to top, hsl(248 32% 10%) 0%, transparent 100%)',
               }}
             >
               ⏳ Sauvegarde en cours…

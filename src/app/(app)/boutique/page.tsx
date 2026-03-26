@@ -1,5 +1,4 @@
-// src/app/(app)/boutique/page.tsx
-// Refonte : Boutique premium, désirabilité visuelle, mobile-first
+// Refonte Ultra-Premium : Boutique immersive avec désirabilité visuelle, glows et relief
 
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
@@ -54,43 +53,44 @@ export default async function BoutiquePage({ searchParams }: BoutiquePageProps) 
   const products = BOUTIQUE_CATALOGUE.filter(p => p.category === activeCategory)
 
   return (
-    <div className="mx-auto max-w-lg px-4 py-6 space-y-6 pb-4 animate-fade-up">
+    <div className="mx-auto max-w-lg px-4 py-8 space-y-8 pb-6 animate-fade-up">
 
-      {/* ── En-tête — plus immersif ── */}
-      <div className="space-y-3">
+      {/* ── En-tête — ultra-immersif ── */}
+      <div className="space-y-5">
         <p
           style={{
-            fontSize: '11px',
-            fontWeight: 600,
-            letterSpacing: '0.22em',
-            color: 'hsl(38 52% 58% / 0.70)',
+            fontSize: '12px',
+            fontWeight: 700,
+            letterSpacing: '0.25em',
+            color: 'hsl(38 65% 72%)',
             textTransform: 'uppercase',
           }}
         >
-          Boutique
+          ✨ Boutique
         </p>
         <h1
           style={{
-            fontFamily: "'Cormorant Garamond', Georgia, serif",
-            fontSize: 'clamp(28px, 7vw, 40px)',
-            fontWeight: 300,
-            letterSpacing: '-0.02em',
-            color: 'hsl(38 14% 90%)',
+            fontFamily: "'Playfair Display', 'Cormorant Garamond', Georgia, serif",
+            fontSize: 'clamp(36px, 9vw, 52px)',
+            fontWeight: 500,
+            letterSpacing: '-0.03em',
+            color: 'hsl(38 14% 96%)',
             lineHeight: 1.1,
+            textShadow: '0 4px 16px hsl(246 40% 2% / 0.40)',
           }}
         >
           Révèle ce qui est en toi.
         </h1>
-        <p className="text-base" style={{ color: 'hsl(248 10% 48%)' }}>
+        <p className="text-base font-medium leading-relaxed" style={{ color: 'hsl(248 10% 52%)' }}>
           Personnalise ton espace. Enrichis ton Codex. Exprime ton essence.
         </p>
       </div>
 
-      {/* ── Bannière plan ── */}
+      {/* ── Bannière plan — ultra-premium ── */}
       <PlanBanner planKey={planKey} />
 
-      {/* ── Tabs catégories — plus visibles ── */}
-      <div className="flex gap-2 overflow-x-auto pb-2" style={{ scrollBehavior: 'smooth', WebkitOverflowScrolling: 'touch' }}>
+      {/* ── Tabs catégories — ultra-visibles ── */}
+      <div className="flex gap-3 overflow-x-auto pb-2" style={{ scrollBehavior: 'smooth', WebkitOverflowScrolling: 'touch' }}>
         {CATEGORIES.map((cat) => {
           const meta = CATEGORY_META[cat]
           const isActive = cat === activeCategory
@@ -98,25 +98,30 @@ export default async function BoutiquePage({ searchParams }: BoutiquePageProps) 
             <Link
               key={cat}
               href={`/boutique?cat=${cat}`}
-              className="flex-shrink-0 flex items-center gap-2 rounded-lg px-4 py-2.5 font-medium transition-all duration-200 active:scale-95"
+              className="flex-shrink-0 flex items-center gap-2.5 rounded-lg px-5 py-3 font-semibold transition-all duration-200 active:scale-95"
               style={{
-                background: isActive ? 'hsl(38 52% 58% / 0.12)' : 'hsl(248 30% 7%)',
-                border: `1px solid ${isActive ? 'hsl(38 52% 58% / 0.30)' : 'hsl(248 22% 14%)'}`,
-                color: isActive ? 'hsl(38 58% 68%)' : 'hsl(248 10% 48%)',
-                fontSize: '14px',
-                minHeight: '40px',
+                background: isActive
+                  ? 'linear-gradient(135deg, hsl(38 52% 58% / 0.18) 0%, hsl(38 52% 58% / 0.08) 100%)'
+                  : 'linear-gradient(135deg, hsl(248 30% 10%) 0%, hsl(248 28% 8%) 100%)',
+                border: isActive
+                  ? '1.5px solid hsl(38 52% 58% / 0.40)'
+                  : '1.5px solid hsl(248 22% 18%)',
+                color: isActive ? 'hsl(38 65% 75%)' : 'hsl(248 10% 52%)',
+                fontSize: '15px',
+                minHeight: '44px',
+                boxShadow: isActive ? '0 0 20px hsl(38 52% 58% / 0.12)' : 'none',
               }}
             >
-              <span style={{ fontSize: '16px' }}>{meta.symbol}</span>
+              <span style={{ fontSize: '18px' }}>{meta.symbol}</span>
               <span>{meta.label}</span>
               <span
                 style={{
-                  fontSize: '11px',
-                  padding: '2px 8px',
+                  fontSize: '12px',
+                  padding: '3px 10px',
                   borderRadius: '999px',
-                  background: 'hsl(248 30% 10%)',
-                  color: 'hsl(248 10% 42%)',
-                  fontWeight: 600,
+                  background: isActive ? 'hsl(38 52% 58% / 0.20)' : 'hsl(248 30% 12%)',
+                  color: isActive ? 'hsl(38 65% 72%)' : 'hsl(248 10% 48%)',
+                  fontWeight: 700,
                 }}
               >
                 {meta.count}
@@ -126,15 +131,15 @@ export default async function BoutiquePage({ searchParams }: BoutiquePageProps) 
         })}
       </div>
 
-      {/* ── Grille produits — meilleure présentation ── */}
-      <div className="space-y-4">
+      {/* ── Grille produits — ultra-désirable ── */}
+      <div className="space-y-5">
         {products.map((product, idx) => {
           const status = getProductStatus(product, entitlementKeys, planKey)
           return (
             <div
               key={product.key}
               className="animate-fade-up"
-              style={{ animationDelay: `${idx * 50}ms` }}
+              style={{ animationDelay: `${idx * 60}ms` }}
             >
               <ProductCard
                 product={product}
@@ -146,15 +151,15 @@ export default async function BoutiquePage({ searchParams }: BoutiquePageProps) 
       </div>
 
       {/* ── Footer ── */}
-      <div className="mt-8 text-center space-y-3">
-        <p className="text-sm" style={{ color: 'hsl(248 10% 40%)' }}>
+      <div className="mt-10 text-center space-y-4">
+        <p className="text-sm font-medium" style={{ color: 'hsl(248 10% 48%)' }}>
           Les achats sont définitifs et non remboursables.
         </p>
         {planKey === 'free' && (
           <Link
             href="/abonnement"
-            className="inline-block text-sm font-medium transition-opacity hover:opacity-70"
-            style={{ color: 'hsl(38 52% 65%)' }}
+            className="inline-block text-sm font-semibold transition-all hover:text-accent"
+            style={{ color: 'hsl(38 65% 75%)' }}
           >
             Passe Premium pour débloquer plus →
           </Link>
@@ -172,16 +177,17 @@ function PlanBanner({ planKey }: { planKey: string }) {
   return (
     <Link href="/abonnement" className="block">
       <div
-        className="rounded-lg p-5 text-center space-y-2 card-hover"
+        className="rounded-2xl p-7 text-center space-y-3 card-hover transition-all"
         style={{
-          background: 'linear-gradient(135deg, hsl(38 52% 58% / 0.08) 0%, hsl(38 52% 58% / 0.04) 100%)',
-          border: '1px solid hsl(38 52% 58% / 0.18)',
+          background: 'linear-gradient(135deg, hsl(38 52% 58% / 0.14) 0%, hsl(38 52% 58% / 0.06) 100%)',
+          border: '1.5px solid hsl(38 52% 58% / 0.25)',
+          boxShadow: '0 0 32px hsl(38 52% 58% / 0.08)',
         }}
       >
-        <p className="text-sm font-medium" style={{ color: 'hsl(38 52% 65%)' }}>
+        <p className="text-base font-semibold" style={{ color: 'hsl(38 65% 75%)' }}>
           ✨ Plan Premium
         </p>
-        <p className="text-xs" style={{ color: 'hsl(248 10% 48%)' }}>
+        <p className="text-sm font-medium" style={{ color: 'hsl(248 10% 52%)' }}>
           Débloque tous les produits et contenus exclusifs
         </p>
       </div>
@@ -205,29 +211,32 @@ function ProductCard({ product, status }: ProductCardProps) {
   return (
     <Link href={`/boutique/${product.key}`} className="block group">
       <div
-        className="rounded-lg overflow-hidden card-hover"
+        className="rounded-2xl overflow-hidden card-hover transition-all"
         style={{
-          background: 'hsl(var(--surface))',
-          border: '1px solid hsl(248 22% 14%)',
+          background: 'linear-gradient(135deg, hsl(248 32% 10%) 0%, hsl(250 30% 8%) 100%)',
+          border: '1.5px solid hsl(38 35% 25% / 0.15)',
+          boxShadow: '0 0 40px hsl(38 52% 58% / 0.06)',
         }}
       >
-        {/* Visuel produit */}
+        {/* Visuel produit — avec glow */}
         <div
-          className="relative aspect-video bg-gradient-to-br from-surface-elevated to-surface overflow-hidden flex items-center justify-center"
+          className="relative aspect-video bg-gradient-to-br from-surface-elevated to-surface overflow-hidden flex items-center justify-center group-hover:brightness-110 transition-all"
           style={{
-            background: 'linear-gradient(135deg, hsl(250 35% 10%) 0%, hsl(260 40% 13%) 100%)',
+            background: 'linear-gradient(135deg, hsl(265 40% 12%) 0%, hsl(250 35% 10%) 100%)',
+            boxShadow: 'inset 0 1px 0 hsl(248 100% 100% / 0.05)',
           }}
         >
           <ProductVisual product={product} />
 
-          {/* Badge statut */}
+          {/* Badge statut — ultra-visible */}
           {isOwned && (
             <div
-              className="absolute top-3 right-3 px-3 py-1.5 rounded-lg text-xs font-semibold"
+              className="absolute top-4 right-4 px-4 py-2 rounded-lg text-sm font-semibold"
               style={{
-                background: 'hsl(148 50% 40% / 0.20)',
-                border: '1px solid hsl(148 50% 40% / 0.40)',
-                color: 'hsl(148 52% 58%)',
+                background: 'linear-gradient(135deg, hsl(148 50% 40% / 0.25) 0%, hsl(148 45% 35% / 0.15) 100%)',
+                border: '1.5px solid hsl(148 55% 50% / 0.40)',
+                color: 'hsl(148 60% 68%)',
+                boxShadow: '0 0 20px hsl(148 55% 50% / 0.15)',
               }}
             >
               ✓ Possédé
@@ -235,11 +244,12 @@ function ProductCard({ product, status }: ProductCardProps) {
           )}
           {isLocked && (
             <div
-              className="absolute top-3 right-3 px-3 py-1.5 rounded-lg text-xs font-semibold"
+              className="absolute top-4 right-4 px-4 py-2 rounded-lg text-sm font-semibold"
               style={{
-                background: 'hsl(248 30% 20% / 0.40)',
-                border: '1px solid hsl(248 20% 30% / 0.40)',
-                color: 'hsl(248 10% 60%)',
+                background: 'linear-gradient(135deg, hsl(248 30% 20% / 0.25) 0%, hsl(248 28% 15% / 0.15) 100%)',
+                border: '1.5px solid hsl(248 20% 30% / 0.40)',
+                color: 'hsl(248 10% 68%)',
+                boxShadow: '0 0 20px hsl(248 20% 30% / 0.10)',
               }}
             >
               🔒 Verrouillé
@@ -247,27 +257,30 @@ function ProductCard({ product, status }: ProductCardProps) {
           )}
         </div>
 
-        {/* Contenu */}
-        <div className="p-5 space-y-3">
+        {/* Contenu — avec relief */}
+        <div className="p-6 space-y-4">
           <div>
             <h3
-              className="font-serif text-lg font-medium"
-              style={{ color: 'hsl(38 22% 90%)' }}
+              className="font-serif text-xl font-medium"
+              style={{
+                color: 'hsl(38 14% 94%)',
+                textShadow: '0 2px 6px hsl(246 40% 2% / 0.25)',
+              }}
             >
               {product.name}
             </h3>
-            <p className="text-sm mt-1" style={{ color: 'hsl(248 10% 48%)' }}>
+            <p className="text-sm mt-2 font-medium leading-relaxed" style={{ color: 'hsl(248 10% 54%)' }}>
               {product.description}
             </p>
           </div>
 
           {/* Pied de carte */}
-          <div className="flex items-center justify-between pt-2">
-            <div className="flex items-center gap-2">
+          <div className="flex items-center justify-between pt-3">
+            <div className="flex items-center gap-2 flex-wrap">
               {product.tags?.map((tag) => (
                 <span
                   key={tag}
-                  className="badge badge-muted text-xs"
+                  className="badge badge-muted text-xs font-semibold"
                 >
                   {tag}
                 </span>
@@ -275,8 +288,8 @@ function ProductCard({ product, status }: ProductCardProps) {
             </div>
             {!isOwned && isPurchasable && (
               <span
-                className="text-base font-semibold"
-                style={{ color: 'hsl(38 52% 65%)' }}
+                className="text-lg font-bold"
+                style={{ color: 'hsl(38 65% 75%)' }}
               >
                 {price}
               </span>

@@ -1,6 +1,5 @@
-// src/components/onboarding/onboarding-flow.tsx
 // Client Component principal — orchestre le flow complet d'onboarding
-// Refonte : UX immersive, mobile-first, scroll management
+// Refonte Ultra-Premium : Typographie Serif, ambiance mystique, progression lumineuse
 
 'use client'
 
@@ -49,7 +48,7 @@ export function OnboardingFlow({ lang }: OnboardingFlowProps) {
   if (isLoading) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
-        <div className="text-sm text-muted-foreground">
+        <div className="text-sm text-muted-foreground animate-fade-in">
           {lang === 'fr' ? 'Chargement…' : 'Loading…'}
         </div>
       </div>
@@ -63,7 +62,7 @@ export function OnboardingFlow({ lang }: OnboardingFlowProps) {
   // Écran d'introduction (avant le bloc 1)
   if (!sessionId) {
     return (
-      <div className="space-y-6 text-center">
+      <div className="space-y-6 text-center animate-fade-in">
         <p className="text-sm text-muted-foreground">
           {lang === 'fr' ? 'Initialisation…' : 'Initializing…'}
         </p>
@@ -74,31 +73,36 @@ export function OnboardingFlow({ lang }: OnboardingFlowProps) {
   const questions = getBlocQuestions(currentBloc)
 
   return (
-    <div ref={containerRef} className="space-y-8">
-      {/* Barre de progression */}
+    <div ref={containerRef} className="space-y-10">
+      {/* Barre de progression — ultra-premium */}
       <ProgressBar
         currentBloc={currentBloc}
         totalBlocs={TOTAL_BLOCS}
         lang={lang}
       />
 
-      {/* Header intro pour le premier bloc */}
+      {/* Header intro pour le premier bloc — mystique élégant */}
       {currentBloc === 1 && (
-        <div className="space-y-4 text-center animate-fade-up">
+        <div className="space-y-6 text-center animate-fade-up">
+          {/* Symbole guide avec glow */}
           <div
-            className="mx-auto h-16 w-16 rounded-full flex items-center justify-center text-3xl"
+            className="mx-auto h-20 w-20 rounded-full flex items-center justify-center text-4xl"
             style={{
-              background: 'hsl(38 52% 58% / 0.08)',
-              border: '1px solid hsl(38 52% 58% / 0.20)',
-              color: 'hsl(38 52% 65%)',
+              background: 'linear-gradient(135deg, hsl(38 52% 58% / 0.16) 0%, hsl(38 52% 58% / 0.08) 100%)',
+              border: '1.5px solid hsl(38 52% 58% / 0.30)',
+              color: 'hsl(38 65% 72%)',
+              boxShadow: '0 0 40px hsl(38 52% 58% / 0.20), inset 0 1px 0 hsl(38 100% 90% / 0.10)',
             }}
           >
             ◯
           </div>
-          <div>
+          <div className="space-y-4">
             <h1
-              className="font-serif text-3xl font-medium"
-              style={{ color: 'hsl(38 14% 92%)' }}
+              className="font-serif text-4xl font-medium"
+              style={{
+                color: 'hsl(38 14% 95%)',
+                textShadow: '0 4px 12px hsl(246 40% 2% / 0.35)',
+              }}
             >
               {lang === 'fr'
                 ? 'Ta Voie commence ici.'
@@ -108,7 +112,7 @@ export function OnboardingFlow({ lang }: OnboardingFlowProps) {
                 ? 'Tu Camino comienza aquí.'
                 : 'Seu Caminho começa aqui.'}
             </h1>
-            <p className="text-base mt-3" style={{ color: 'hsl(248 10% 50%)' }}>
+            <p className="text-base font-medium leading-relaxed max-w-md mx-auto" style={{ color: 'hsl(248 10% 52%)' }}>
               {lang === 'fr'
                 ? 'Réponds honnêtement. Plus tes réponses sont sincères, plus ta Voie sera juste et utile.'
                 : lang === 'en'
@@ -121,14 +125,15 @@ export function OnboardingFlow({ lang }: OnboardingFlowProps) {
         </div>
       )}
 
-      {/* Erreur */}
+      {/* Erreur — ultra-visible */}
       {error && (
         <div
-          className="rounded-xl px-4 py-3 text-sm animate-fade-up"
+          className="rounded-xl px-5 py-4 text-sm font-medium animate-fade-up"
           style={{
-            background: 'hsl(0 70% 45% / 0.1)',
-            border: '1px solid hsl(0 70% 45% / 0.2)',
-            color: 'hsl(0 70% 65%)',
+            background: 'linear-gradient(135deg, hsl(0 70% 45% / 0.15) 0%, hsl(0 65% 40% / 0.08) 100%)',
+            border: '1.5px solid hsl(0 70% 50% / 0.30)',
+            color: 'hsl(0 70% 72%)',
+            boxShadow: '0 0 24px hsl(0 70% 45% / 0.10)',
           }}
         >
           {error}
